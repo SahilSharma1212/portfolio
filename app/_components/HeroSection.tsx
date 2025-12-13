@@ -16,7 +16,7 @@ const icons = [
   },
   {
     name: 'Mail',
-    link: 'mailto:your-email@example.com', // Replace with real email or keep GitHub temporarily
+    link: 'mailto:sahilbhaisharma1212@gmail.com', // Replace with real email or keep GitHub temporarily
     icon: Mail,
     color: 'hover:text-red-500',
     download: false,
