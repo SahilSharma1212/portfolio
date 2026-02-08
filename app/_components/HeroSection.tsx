@@ -95,7 +95,7 @@ const Languages = ['C++', 'JavaScript', 'TypeScript', 'Python', 'Java'];
 const Frontend = ['HTML5', 'CSS3', 'JavaScript', 'React.js', 'Next.js', 'Tailwind CSS', 'Framer Motion', 'Responsive UI', 'Context API', 'Zustand', 'UI Libraries', 'Three.js'];
 
 
-const Backend = ['Node.js', 'Express.js', 'REST APIs', 'JWT Authentication', 'Databases', 'Mongo DB', 'Supabase', 'Firebase', 'REST API', 'Clerk', 'Websockets', 'Redis'];
+const Backend = ['Node.js', 'Express.js', 'REST APIs', 'JWT Authentication', 'Databases', 'Mongo DB', 'Supabase', 'Firebase', 'Clerk', 'Websockets', 'Redis'];
 
 
 const Tools = ['Git', 'GitHub', 'Figma', 'Postman', 'Vercel', 'Netlify', 'Debugging', 'Langchain'];
