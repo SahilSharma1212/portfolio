@@ -110,7 +110,7 @@ const Learning = ['Devops', 'DSA', 'Linux', 'Agentic AI', 'Docker'];
 const SkillsBadge = memo(({ theme, skill }: { theme: string, skill: string }) => {
 
   return (
-    <span className={`px-2 py-1 ${theme === 'light' ? 'bg-black text-white hover:bg-black/80' : 'bg-white text-black hover:bg-white/80'} rounded-md  cursor-pointer`}>{skill}</span>
+    <span className={`px-2 py-1 ${theme === 'light' ? 'bg-black text-white hover:bg-black/80' : 'bg-[#eee] text-black hover:bg-white/80'} rounded-md  cursor-pointer`}>{skill}</span>
   )
 })
 
@@ -166,6 +166,18 @@ function HeroSection() {
         </div>
       </div>
 
+      <div className={'w-full p-3 flex items-center justify-center mt-7 border  rounded-lg ' + (theme === 'light' ? 'border-gray-200' : 'border-gray-800')}>
+        <a href="https://github.com/SahilSharma1212" target="_blank">
+          <img
+            src="https://ghchart.rshah.org/0d1117/SahilSharma1212"
+            alt="GitHub Contributions"
+          />
+
+        </a>
+
+      </div>
+
+
       {/* ABOUT */}
       <div className="flex flex-col gap-2 px-5 py-7 pt-12 items-start">
         <p className={`text-lg ${theme === 'light' ? 'text-black' : 'text-white'} text-center font-semibold`}>About</p>
@@ -211,7 +223,7 @@ function HeroSection() {
         <p className={`text-lg ${theme === 'light' ? 'text-black' : 'text-white'} text-center font-semibold`}>Skills</p>
 
 
-        <p className={`text-lg ${theme === 'light' ? 'text-[#555]' : 'text-[#888]'} text-center font-semibold`}>Languages</p>
+        <p className={`text-lg ${theme === 'light' ? 'text-[#777]' : 'text-[#bbb]'} text-center font-semibold`}>Languages</p>
         <div className="flex flex-wrap gap-2">
 
           {
@@ -221,7 +233,7 @@ function HeroSection() {
           }
         </div>
 
-        <p className={`text-lg ${theme === 'light' ? 'text-[#555]' : 'text-[#888]'} text-center font-semibold`}>Frontend</p>
+        <p className={`text-lg ${theme === 'light' ? 'text-[#777]' : 'text-[#bbb]'} text-center font-semibold`}>Frontend</p>
         <div className="flex flex-wrap gap-2">
           {
             Frontend.map((skill, index) => (
@@ -230,7 +242,7 @@ function HeroSection() {
           }
         </div>
 
-        <p className={`text-lg ${theme === 'light' ? 'text-[#555]' : 'text-[#888]'} text-center font-semibold`}>Backend</p>
+        <p className={`text-lg ${theme === 'light' ? 'text-[#777]' : 'text-[#bbb]'} text-center font-semibold`}>Backend</p>
         <div className="flex flex-wrap gap-2">
           {
             Backend.map((skill, index) => (
@@ -239,7 +251,7 @@ function HeroSection() {
           }
         </div>
 
-        <p className={`text-lg ${theme === 'light' ? 'text-[#555]' : 'text-[#888]'} text-center font-semibold`}>Tools</p>
+        <p className={`text-lg ${theme === 'light' ? 'text-[#777]' : 'text-[#bbb]'} text-center font-semibold`}>Tools</p>
         <div className="flex flex-wrap gap-2">
           {
             Tools.map((skill, index) => (
@@ -249,7 +261,7 @@ function HeroSection() {
         </div>
 
 
-        <p className={`text-lg ${theme === 'light' ? 'text-[#555]' : 'text-[#888]'} text-center font-semibold`}>Learning</p>
+        <p className={`text-lg ${theme === 'light' ? 'text-[#777]' : 'text-[#bbb]'} text-center font-semibold`}>Learning</p>
         <div className="flex flex-wrap gap-2">
           {
             Learning.map((skill, index) => (
@@ -287,7 +299,7 @@ function HeroSection() {
               </div>
 
               {/* Description */}
-              <p className="text-sm text-gray-400 leading-relaxed">
+              <p className={`text-sm ${theme === 'light' ? 'text-[#999]' : 'text-[#bbb]'} leading-relaxed`}>
                 {project.desc}
               </p>
 
@@ -299,7 +311,7 @@ function HeroSection() {
                     className={`text-xs px-2 py-1 rounded-md
                 ${theme === 'light'
                         ? 'bg-gray-200 text-black'
-                        : 'bg-gray-800 text-white'
+                        : 'bg-[#23232f] text-white'
                       }`}
                   >
                     {tech}
@@ -401,10 +413,10 @@ function HeroSection() {
               type="email"
               name="email"
               placeholder="you@example.com"
-              className={`p-2 rounded-md text-sm outline-none
+              className={`p-2 rounded-md text-sm outline-none placeholder:text-gray-400
           ${theme === 'light'
                   ? 'bg-gray-100 text-black'
-                  : 'bg-gray-900 text-white'
+                  : 'bg-[#23232f] text-white'
                 }`}
             />
           </div>
@@ -415,10 +427,10 @@ function HeroSection() {
               name="message"
               rows={4}
               placeholder="Let's build something cool..."
-              className={`p-2 rounded-md text-sm outline-none resize-none
+              className={`p-2 rounded-md text-sm outline-none placeholder:text-gray-400 resize-none
           ${theme === 'light'
                   ? 'bg-gray-100 text-black'
-                  : 'bg-gray-900 text-white'
+                  : 'bg-[#23232f] text-white'
                 }`}
             />
           </div>
