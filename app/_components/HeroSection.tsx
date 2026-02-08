@@ -125,7 +125,12 @@ function HeroSection() {
     return () => clearInterval(interval);
   }, []);
   return (
-    <div className={`${theme == 'light' ? 'bg-white text-black border-gray-200' : 'bg-black text-white border-gray-800'} py-3 pt-20 px-5 border-x`}>
+    <motion.div
+      initial={{ opacity: 0, filter: 'blur(10px)' }}
+      animate={{ opacity: 1, filter: 'blur(0px)' }}
+      transition={{ duration: 0.8 }}
+      className={`${theme == 'light' ? 'bg-white text-black border-gray-200' : 'bg-black text-white border-gray-800'} py-3 pt-20 px-5 border-x`}
+    >
 
       {/* INTRO SECTION */}
       <div className="flex items-center justify-between px-5">
@@ -476,7 +481,7 @@ function HeroSection() {
       </footer>
 
 
-    </div >
+    </motion.div >
   );
 }
 
