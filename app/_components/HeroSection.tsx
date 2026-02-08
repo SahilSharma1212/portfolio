@@ -161,7 +161,7 @@ function HeroSection() {
         </div>
 
         {/* right image */}
-        <div className='w-30 h-30 rounded-full overflow-hidden'>
+        <div className='w-30 h-30 rounded-full overflow-hidden max-md:hidden'>
           <img src="/linkedinimage.jpg" alt="hero" className="w-full h-full object-cover" />
         </div>
       </div>
