@@ -6,9 +6,38 @@ import { memo, useEffect, useState } from "react";
 import { useThemeStore } from '@/store/themeStore';
 import Link from 'next/link';
 import toast, { Toaster } from 'react-hot-toast';
-
 const lines = ['I learn, ', 'I build, ', 'I code'];
-
+import { FaJs } from "react-icons/fa";
+import { FaPython } from "react-icons/fa";
+import { FaJava } from "react-icons/fa";
+import { IconType } from 'react-icons/lib';
+import { BiLogoTypescript } from "react-icons/bi";
+import { FaHtml5 } from "react-icons/fa";
+import { IoLogoCss3 } from "react-icons/io5";
+import { FaReact } from "react-icons/fa";
+import { RiNextjsFill } from "react-icons/ri";
+import { RiTailwindCssFill } from "react-icons/ri";
+import { SiFramer } from "react-icons/si";
+import { ImMobile2 } from "react-icons/im";
+import { TbBrandThreejs } from "react-icons/tb";
+import { FaNodeJs } from "react-icons/fa6";
+import { SiExpress } from "react-icons/si";
+import { TbDatabaseSearch } from "react-icons/tb";
+import { SiAuthy } from "react-icons/si";
+import { DiMongodb } from "react-icons/di";
+import { IoLogoFirebase } from "react-icons/io5";
+import { SiRedis } from "react-icons/si";
+import { SiClerk } from "react-icons/si";
+import { TbBrandSocketIo } from "react-icons/tb";
+import { FaGithub } from "react-icons/fa";
+import { IoIosGitNetwork } from "react-icons/io";
+import { LuFigma } from "react-icons/lu";
+import { SiPostman } from "react-icons/si";
+import { IoLogoVercel } from "react-icons/io5";
+import { SiLangchain } from "react-icons/si";
+import { FaInfinity } from "react-icons/fa";
+import { FaDocker } from "react-icons/fa";
+import { VscTerminalLinux } from "react-icons/vsc";
 
 const projects = [
 
@@ -89,31 +118,65 @@ const projects = [
 
 
 ]
-const Languages = ['C++', 'JavaScript', 'TypeScript', 'Python', 'Java'];
+const Languages = [{ name: 'C++' }, { name: 'JavaScript', icon: FaJs }, { name: 'TypeScript', icon: BiLogoTypescript }, { name: 'Python', icon: FaPython }, { name: 'Java', icon: FaJava }];
 
 
-const Frontend = ['HTML5', 'CSS3', 'JavaScript', 'React.js', 'Next.js', 'Tailwind CSS', 'Framer Motion', 'Responsive UI', 'Context API', 'Zustand', 'UI Libraries', 'Three.js'];
+const Frontend = [{ name: 'HTML5', icon: FaHtml5 }, { name: 'CSS3', icon: IoLogoCss3 }, { name: 'JavaScript', icon: FaJs }, { name: 'React.js', icon: FaReact }, { name: 'Next.js', icon: RiNextjsFill }, { name: 'Tailwind CSS', icon: RiTailwindCssFill }, { name: 'Framer Motion', icon: SiFramer }, { name: 'Responsive UI', icon: ImMobile2 }, { name: 'Context API' }, { name: 'Zustand' }, { name: 'UI Libraries' }, { name: 'Three.js', icon: TbBrandThreejs }];
 
 
-const Backend = ['Node.js', 'Express.js', 'REST APIs', 'JWT Authentication', 'Databases', 'Mongo DB', 'Supabase', 'Firebase', 'Clerk', 'Websockets', 'Redis'];
+const Backend = [
+  { name: 'Node.js', icon: FaNodeJs },
+  { name: 'Express.js', icon: SiExpress },
+  { name: 'REST APIs' },
+  { name: 'JWT Authentication', icon: SiAuthy },
+  { name: 'Databases', icon: TbDatabaseSearch },
+  { name: 'Mongo DB', icon: DiMongodb },
+  { name: 'Supabase' },
+  { name: 'Firebase', icon: IoLogoFirebase },
+  { name: 'Clerk', icon: SiClerk },
+  { name: 'Websockets', icon: TbBrandSocketIo },
+  { name: 'Redis', icon: SiRedis }
+];
 
+const Tools = [
+  { name: 'Git', icon: IoIosGitNetwork },
+  { name: 'GitHub', icon: FaGithub },
+  { name: 'Figma', icon: LuFigma },
+  { name: 'Postman', icon: SiPostman },
+  { name: 'Vercel', icon: IoLogoVercel },
+  { name: 'Netlify' },
+  { name: 'Debugging' },
+  { name: 'Langchain', icon: SiLangchain },
+  { name: 'RAGs' }
+];
 
-const Tools = ['Git', 'GitHub', 'Figma', 'Postman', 'Vercel', 'Netlify', 'Debugging', 'Langchain'];
+const Learning = [
+  { name: 'Devops', icon: FaInfinity },
+  { name: 'DSA' },
+  { name: 'Linux', icon: VscTerminalLinux },
+  { name: 'Agentic AI' },
+  { name: 'Docker', icon: FaDocker }
+];
 
-
-const Learning = ['Devops', 'DSA', 'Linux', 'Agentic AI', 'Docker'];
-
-
-
-
-
-const SkillsBadge = memo(({ theme, skill }: { theme: string, skill: string }) => {
-
-  return (
-    <span className={`px-2 py-1 ${theme === 'light' ? 'bg-black text-white hover:bg-black/80' : 'bg-[#eee] text-black hover:bg-white/80'} rounded-md  cursor-pointer`}>{skill}</span>
-  )
-})
-
+const SkillsBadge = memo(
+  ({ theme, skill, icon: Icon }: {
+    theme: string;
+    skill: string;
+    icon?: IconType;    // ← make it optional
+  }) => {
+    return (
+      <span
+        className={`px-2 py-1 flex items-center gap-1.5 text-sm font-medium rounded-md cursor-pointer transition-colors
+          ${theme === 'light'
+            ? 'bg-black text-white hover:bg-black/80'
+            : 'bg-[#eee] text-black hover:bg-white/80'}`}
+      >
+        {Icon && <Icon size={16} />}   {/* ← render only if icon exists */}
+        {skill}
+      </span>
+    );
+  }
+);
 
 function HeroSection() {
   const { theme } = useThemeStore();
@@ -228,7 +291,8 @@ function HeroSection() {
 
           {
             Languages.map((skill, index) => (
-              <SkillsBadge key={index} theme={theme} skill={skill} />
+
+              <SkillsBadge key={index} theme={theme} skill={skill.name} icon={skill.icon} />
             ))
           }
         </div>
@@ -237,7 +301,7 @@ function HeroSection() {
         <div className="flex flex-wrap gap-2">
           {
             Frontend.map((skill, index) => (
-              <SkillsBadge key={index} theme={theme} skill={skill} />
+              <SkillsBadge key={index} theme={theme} skill={skill.name} icon={skill.icon} />
             ))
           }
         </div>
@@ -246,7 +310,7 @@ function HeroSection() {
         <div className="flex flex-wrap gap-2">
           {
             Backend.map((skill, index) => (
-              <SkillsBadge key={index} theme={theme} skill={skill} />
+              <SkillsBadge key={index} theme={theme} skill={skill.name} icon={skill.icon} />
             ))
           }
         </div>
@@ -255,7 +319,7 @@ function HeroSection() {
         <div className="flex flex-wrap gap-2">
           {
             Tools.map((skill, index) => (
-              <SkillsBadge key={index} theme={theme} skill={skill} />
+              <SkillsBadge key={index} theme={theme} skill={skill.name} icon={skill.icon} />
             ))
           }
         </div>
@@ -265,7 +329,7 @@ function HeroSection() {
         <div className="flex flex-wrap gap-2">
           {
             Learning.map((skill, index) => (
-              <SkillsBadge key={index} theme={theme} skill={skill} />
+              <SkillsBadge key={index} theme={theme} skill={skill.name} icon={skill.icon} />
             ))
           }
         </div>
