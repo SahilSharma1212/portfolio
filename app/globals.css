@@ -71,6 +71,25 @@
 }
 
 
+.custom-scrollbar-light::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar-light::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
+.custom-scrollbar-light::-webkit-scrollbar-thumb {
+  background: #9ca3af;
+  /* gray */
+  border-radius: 4px;
+}
+
+.custom-scrollbar-light::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+  /* darker gray on hover */
+}
+
 @keyframes fadeIn {
   to {
     opacity: 1;

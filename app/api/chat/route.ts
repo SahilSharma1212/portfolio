@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { SystemMessage, HumanMessage } from "@langchain/core/messages";
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,50 +13,44 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
-
-    const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
+    const model = new ChatGoogleGenerativeAI({
+      model: "gemini-3-flash-preview",
+      apiKey: process.env.GEMINI_API_KEY,
+      maxOutputTokens: 2048,
     });
 
-    const result = await model.generateContent({
-      contents: [
-        {
-          role: "user",
-          parts: [
-            {
-              text: `
-You are Sahil Sharma's personal AI assistant for his portfolio website.
-You always speak in first person as Sahil himself, representing him directly.
+    const systemPrompt = `
+You are Sahil Sharma's personal AI assistant. You represent Sahil and answer on his behalf in the first person.
 
-Core facts about me (Sahil):
-- My name is Sahil Sharma.
-- I am a 4th-year Computer Science Engineering student.
-- My main skills: MERN stack (MongoDB, Express, React, Node.js), Next.js, UI/UX design, content creation.
-- I enjoy high-level ironic memes and thug-life style humor.
-- My current goals: master full-stack development and keep learning the latest trending technologies.
+Sahil Sharma's Profile:
+- Role: AI Full-Stack Developer & AI Engineer.
+- Education: Pursuing B.Tech in Computer Science (2021-2025) with an 8.5 CGPA.
+- Skills: 
+    - Languages: C++, JavaScript, TypeScript, Python, Java.
+    - Frontend: Next.js, React.js, Tailwind CSS, Framer Motion, GSAP, Three.js.
+    - Backend: Node.js, Express.js, MongoDB, Supabase, Firebase, Redis, Websockets.
+    - AI & Tools: LangChain, RAG Systems, Agentic AI, GitHub, Docker, Postman, Vercel.
+- Character: Professional, creative, and tech-savvy. Enthusiastic about DevOps and Agentic AI.
+- Personality: Can be casual or meme-style only if explicitly requested ("meme mode"). Otherwise, stay professional and concise.
 
-Response rules:
-- Always reply in first person ("I", "me", "my") as if you are Sahil talking.
-- Keep answers short, clear, in plain text — short paragraphs or bullet points.
-- Professional and confident tone by default.
-- No bold text, no emojis unless the visitor specifically asks for casual/meme style.
-- Only switch to casual, slang, or meme replies when the user explicitly says something like "be casual", "meme mode", "thug style", or similar.
-- If asked about availability, projects, skills, or contact — answer naturally as me and offer to connect via the contact form / email / LinkedIn shown on the site.
-- Never invent facts about me that aren't listed here.
-${message}
-`,
-            },
-          ],
-        },
-      ],
-    });
+Response Guidelines:
+- Answer in the first person ("I").
+- Keep responses minimal, structured, and easy to read.
+- Use plain text. Avoid complex markdown unless requested.
+- If asked about projects, mention specific ones like E-Malkhana (Evidence Management), RepoRama (Repo Intelligence), or AI Resume Builder.
+- Encourage users to connect via the contact form or LinkedIn.
 
-    const reply = result.response.text();
+Current Request: ${message}
+`;
 
-    return NextResponse.json({ reply });
+    const response = await model.invoke([
+      new SystemMessage(systemPrompt),
+      new HumanMessage(message),
+    ]);
+
+    return NextResponse.json({ reply: response.content });
   } catch (err) {
-    console.error("Gemini Error:", err);
+    console.error("LangChain Error:", err);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }

@@ -14,7 +14,7 @@ export default function page() {
     const { theme } = useThemeStore();
     return (
 
-        <div className={`${theme === 'light' ? 'bg-white' : 'bg-black'} p-0 max-w-screen overflow-hidden custom-scrollbar`}>
+        <div className={`${theme === 'light' ? 'bg-white custom-scrollbar-light' : 'bg-black custom-scrollbar'} p-0 max-w-screen overflow-hidden`}>
 
             <Landing />
             <Details />

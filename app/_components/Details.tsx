@@ -1,24 +1,24 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { useThemeStore } from "@/store/themeStore";
 import { useEffect, useState, useRef } from "react";
 import gsap from "gsap";
 import AnimatedBorder from "./AnimatedBorder";
-import { Users, UserPlus, FolderGit2, Star } from "lucide-react";
-import { FaGithub, FaLinkedin, FaRegStar } from "react-icons/fa";
-import { IoMdMail } from "react-icons/io";
-import { IoDocumentTextSharp } from "react-icons/io5";
 import { BiGitRepoForked } from "react-icons/bi";
 import { LuUsers } from "react-icons/lu";
 import { FiUserPlus } from "react-icons/fi";
+import { IoLogoGithub, IoLogoLinkedin, IoDocumentTextSharp, IoCallSharp } from "react-icons/io5";
+import { IoMdMail } from "react-icons/io";
+import { Star } from "lucide-react";
 import { memo } from "react";
 
-const lines = ['I learn, ', 'I build, ', 'I code'];
+const lines = ['I run, ', 'I build, ', 'I code'];
 
 function Details() {
     const { theme } = useThemeStore();
     const githubBoxRef = useRef<HTMLDivElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
     const aboutMeBoxRef = useRef<HTMLDivElement>(null);
 
     const [activeLineIndex, setActiveLineIndex] = useState(0);
@@ -92,22 +92,67 @@ function Details() {
         "--border-progress": 0,
     } as React.CSSProperties;
 
+    const containerVariants: Variants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.04,
+                delayChildren: 0.2,
+            }
+        }
+    };
+
+    const charVariants: Variants = {
+        hidden: { y: 100, opacity: 0 },
+        visible: {
+            y: 0,
+            opacity: 1,
+            transition: {
+                duration: 1.4,
+                ease: [0.22, 1, 0.36, 1],
+            }
+        }
+    };
+
+    const splitText = (text: string) =>
+        text.split("").map((char, i) => (
+            <motion.span
+                key={i}
+                variants={charVariants}
+                className="char inline-block"
+            >
+                {char === " " ? "\u00A0" : char}
+            </motion.span>
+        ));
+
+
+    const handleDownloadResume = () => {
+        const link = document.createElement('a');
+        link.href = '/Sahil_Sharma_Fullstack_Resume.pdf';
+        link.download = 'Sahil_Sharma_Resume.pdf';
+        link.click();
+    };
 
     return (
-        <div id="details" className="min-h-screen w-screen bg-linear-to-bl to-[#070707] from-[#030303] via-[#090909] text-white overflow-hidden p-4 sm:p-6 md:p-12 lg:p-20 relative">
+        <div id="about" className={`min-h-screen w-screen transition-colors duration-700 ${theme === 'light'
+                ? 'bg-neutral-50 text-neutral-900'
+                : 'bg-linear-to-bl to-[#070707] from-[#030303] via-[#090909] text-white'
+            } overflow-hidden p-4 sm:p-6 md:p-12 lg:p-20 relative`}>
             {/* Background gradients to match Landing */}
             <div className="fixed inset-0 -z-10 overflow-hidden">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_100%,rgba(50,50,50,0.1)_0%,transparent_50%)]" />
+                <div className={`absolute inset-0 transition-opacity duration-700 ${theme === 'light' ? 'opacity-30' : 'opacity-100'} bg-[radial-gradient(circle_at_50%_100%,rgba(50,50,50,0.1)_0%,transparent_50%)]`} />
             </div>
 
             {/* Background "ABOUT ME" */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden z-0">
                 <motion.span
                     initial={{ opacity: 0, scale: 1.04 }}
-                    whileInView={{ opacity: 0.03, scale: 1 }}
+                    whileInView={{ opacity: theme === 'light' ? 0.05 : 0.03, scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ duration: 1.2, ease: "easeOut" }}
-                    className="text-[20vw] md:text-[18vw] lg:text-[16vw] font-black uppercase tracking-widest text-white/50 leading-none whitespace-nowrap"
+                    className={`text-[20vw] md:text-[18vw] lg:text-[16vw] font-black uppercase tracking-widest leading-none whitespace-nowrap transition-colors duration-700 ${theme === 'light' ? 'text-black' : 'text-white'
+                        }`}
                 >
                     ABOUT ME
                 </motion.span>
@@ -117,26 +162,35 @@ function Details() {
             <div className="relative mb-10 p-6 sm:p-10 backdrop-blur-3xl">
                 <AnimatedBorder />
                 <motion.h1
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
+                    variants={containerVariants}
+                    initial="hidden"
+                    whileInView="visible"
                     viewport={{ once: true }}
-                    className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extralight font-mono tracking-tighter mb-6"
+                    className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extralight font-mono tracking-tighter mb-6 overflow-hidden"
                 >
-                    Guess What Recruiters
+                    {splitText("Guess What Recruiters")}
                 </motion.h1>
 
                 <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2">
                     {lines.map((line, index) => (
-                        <span
+                        <motion.div
                             key={index}
-                            className={`inline-block transition-all duration-700 font-mono
+                            variants={containerVariants}
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true }}
+                            className={`inline-block transition-all duration-700 font-mono overflow-hidden
                                 ${index === activeLineIndex
-                                    ? 'text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white opacity-100 scale-105'
-                                    : 'text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white/10 blur-[2px]'
+                                    ? theme === 'light'
+                                        ? 'text-black opacity-100 scale-105 text-4xl sm:text-5xl md:text-6xl lg:text-7xl'
+                                        : 'text-white opacity-100 scale-105 text-4xl sm:text-5xl md:text-6xl lg:text-7xl'
+                                    : theme === 'light'
+                                        ? 'text-black/20 blur-[2px] text-4xl sm:text-5xl md:text-6xl lg:text-7xl'
+                                        : 'text-white/10 blur-[2px] text-4xl sm:text-5xl md:text-6xl lg:text-7xl'
                                 }`}
                         >
-                            {line}
-                        </span>
+                            {splitText(line)}
+                        </motion.div>
                     ))}
                 </div>
             </div>
@@ -146,10 +200,10 @@ function Details() {
                 <motion.div
                     ref={githubBoxRef}
                     style={borderStyles}
-                    initial={{ opacity: 0, scale: 0.95 }}
+                    initial={{ opacity: 0, scale: 0.97 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.8 }}
+                    transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
                     className="lg:col-span-2 relative p-6 sm:p-10 flex flex-col items-center justify-center backdrop-blur-3xl min-h-[300px]"
                 >
                     <AnimatedBorder />
@@ -177,7 +231,7 @@ function Details() {
                             </div>
                             <div className="relative flex flex-col items-center justify-center p-4 border border-white/10 hover:bg-white/5 transition-colors">
                                 <AnimatedBorder />
-                                <FaRegStar className="w-5 h-5 sm:w-6 sm:h-6 mb-2 text-neutral-400" />
+                                <Star className="w-5 h-5 sm:w-6 sm:h-6 mb-2 text-neutral-400" />
                                 <span className="text-xl sm:text-2xl font-mono font-light">{githubData.stars}</span>
                                 <span className="text-[10px] sm:text-xs tracking-widest text-neutral-500 uppercase mt-1">Stars</span>
                             </div>
@@ -203,35 +257,55 @@ function Details() {
                             href="https://github.com/SahilSharma1212"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="relative flex items-center justify-center p-3 sm:p-4 border border-white/10 hover:bg-white/5 transition-all duration-300 group cursor-pointer"
+                            className={`relative flex items-center justify-center p-3 sm:p-4 border transition-all duration-300 group cursor-pointer ${theme === 'light' ? 'border-black/10 hover:bg-black/5' : 'border-white/10 hover:bg-white/5'
+                                }`}
                         >
                             <AnimatedBorder />
-                            <FaGithub className="w-6 h-6 sm:w-7 sm:h-7 text-neutral-400 group-hover:text-white group-hover:scale-110 transition-all duration-300" />
+                            <IoLogoGithub className={`w-6 h-6 sm:w-7 sm:h-7 transition-all duration-300 ${theme === 'light' ? 'text-neutral-600 group-hover:text-black group-hover:scale-110' : 'text-neutral-400 group-hover:text-white group-hover:scale-110'
+                                }`} />
                         </a>
 
                         <a
                             href="mailto:sahilbhaisharma1212@gmail.com"
-                            className="relative flex items-center justify-center p-3 sm:p-4 border border-white/10 hover:bg-white/5 transition-all duration-300 group cursor-pointer"
+                            className={`relative flex items-center justify-center p-3 sm:p-4 border transition-all duration-300 group cursor-pointer ${theme === 'light' ? 'border-black/10 hover:bg-black/5' : 'border-white/10 hover:bg-white/5'
+                                }`}
                         >
                             <AnimatedBorder />
-                            <IoMdMail className="w-6 h-6 sm:w-7 sm:h-7 text-neutral-400 group-hover:text-white group-hover:scale-110 transition-all duration-300" />
+                            <IoMdMail className={`w-6 h-6 sm:w-7 sm:h-7 transition-all duration-300 ${theme === 'light' ? 'text-neutral-600 group-hover:text-black group-hover:scale-110' : 'text-neutral-400 group-hover:text-white group-hover:scale-110'
+                                }`} />
                         </a>
 
                         <a
                             href="https://www.linkedin.com/in/sahil-sharma-822a752a9/"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="relative flex items-center justify-center p-3 sm:p-4 border border-white/10 hover:bg-white/5 transition-all duration-300 group cursor-pointer"
+                            className={`relative flex items-center justify-center p-3 sm:p-4 border transition-all duration-300 group cursor-pointer ${theme === 'light' ? 'border-black/10 hover:bg-black/5' : 'border-white/10 hover:bg-white/5'
+                                }`}
                         >
                             <AnimatedBorder />
-                            <FaLinkedin className="w-6 h-6 sm:w-7 sm:h-7 text-neutral-400 group-hover:text-white group-hover:scale-110 transition-all duration-300" />
+                            <IoLogoLinkedin className={`w-6 h-6 sm:w-7 sm:h-7 transition-all duration-300 ${theme === 'light' ? 'text-neutral-600 group-hover:text-black group-hover:scale-110' : 'text-neutral-400 group-hover:text-white group-hover:scale-110'
+                                }`} />
                         </a>
+
                         <div
-                            className="relative flex items-center justify-center p-3 sm:p-4 border border-white/10 hover:bg-white/5 transition-all duration-300 group cursor-pointer"
+                            onClick={handleDownloadResume}
+                            className={`relative flex items-center justify-center p-3 sm:p-4 border transition-all duration-300 group cursor-pointer ${theme === 'light' ? 'border-black/10 hover:bg-black/5' : 'border-white/10 hover:bg-white/5'
+                                }`}
                         >
                             <AnimatedBorder />
-                            <IoDocumentTextSharp className="w-6 h-6 sm:w-7 sm:h-7 text-neutral-400 group-hover:text-white group-hover:scale-110 transition-all duration-300" />
+                            <IoDocumentTextSharp className={`w-6 h-6 sm:w-7 sm:h-7 transition-all duration-300 ${theme === 'light' ? 'text-neutral-600 group-hover:text-black group-hover:scale-110' : 'text-neutral-400 group-hover:text-white group-hover:scale-110'
+                                }`} />
                         </div>
+
+                        <a
+                            href="tel:+918821809999"
+                            className={`relative flex items-center justify-center p-3 sm:p-4 border transition-all duration-300 group cursor-pointer ${theme === 'light' ? 'border-black/10 hover:bg-black/5' : 'border-white/10 hover:bg-white/5'
+                                }`}
+                        >
+                            <AnimatedBorder />
+                            <IoCallSharp className={`w-6 h-6 sm:w-7 sm:h-7 transition-all duration-300 ${theme === 'light' ? 'text-neutral-600 group-hover:text-black group-hover:scale-110' : 'text-neutral-400 group-hover:text-white group-hover:scale-110'
+                                }`} />
+                        </a>
                     </div>
                 </motion.div>
 
@@ -239,10 +313,10 @@ function Details() {
                 <motion.div
                     ref={aboutMeBoxRef}
                     style={borderStyles}
-                    initial={{ opacity: 0, scale: 0.95 }}
+                    initial={{ opacity: 0, scale: 0.97 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.8, delay: 0.2 }}
+                    transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
                     className="relative p-8 sm:p-10 backdrop-blur-3xl flex flex-col justify-center group overflow-hidden"
                 >
                     <AnimatedBorder />
@@ -258,9 +332,15 @@ function Details() {
                     </div>
 
                     <div className="relative z-10">
-                        <h2 className="text-xl sm:text-2xl font-mono text-white/80 group-hover:text-white mb-6 tracking-widest uppercase transition-colors duration-500">
-                            About Me
-                        </h2>
+                        <motion.h2 
+                            variants={containerVariants}
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true }}
+                            className={`text-xl sm:text-2xl font-mono ${theme === 'light' ? 'text-black/80 group-hover:text-black' : 'text-white/80 group-hover:text-white'} mb-6 tracking-widest uppercase transition-colors duration-500 overflow-hidden`}
+                        >
+                            {splitText("About Me")}
+                        </motion.h2>
 
                         <p className="text-neutral-400 group-hover:text-neutral-200 text-base sm:text-lg leading-relaxed font-light transition-colors duration-500">
                             I am an AI full-stack developer focused on building intelligent and
@@ -279,7 +359,15 @@ function Details() {
             {/* ACADEMICS */}
             <div className="relative my-10 p-6 sm:p-10 backdrop-blur-3xl">
                 <AnimatedBorder />
-                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extralight font-mono tracking-tighter mb-6">Academics</h1>
+                <motion.h1 
+                    variants={containerVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extralight font-mono tracking-tighter mb-6 overflow-hidden"
+                >
+                    {splitText("Academics")}
+                </motion.h1>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {/* 10th */}
                     <div className="relative h-20 overflow-hidden flex flex-col group border border-white/5 hover:border-white/20 transition-colors">

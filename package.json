@@ -11,6 +11,8 @@
   "dependencies": {
     "@google/genai": "^1.32.0",
     "@google/generative-ai": "^0.24.1",
+    "@langchain/core": "^1.1.33",
+    "@langchain/google-genai": "^2.1.26",
     "@react-email/components": "^1.0.1",
     "@react-email/render": "^2.0.0",
     "gsap": "^3.14.2",

@@ -43,7 +43,7 @@ export default function ComponentsLayout({ children }: { children: React.ReactNo
 
     // Don't show the full layout on the index page if we want just a list there, 
     // or keep it consistent. The user said "layout containing the list... and respective component would have its own route".
-    
+
     return (
         <div className={`min-h-screen w-screen flex flex-col items-center p-4 sm:p-6 md:p-12 lg:p-20 relative overflow-hidden ${theme === 'light' ? 'bg-white' : 'bg-linear-to-br from-[#070707] to-[#030303] via-[#090909]'}`}>
             {/* Background "LIBRARY" */}
@@ -57,7 +57,7 @@ export default function ComponentsLayout({ children }: { children: React.ReactNo
                 </motion.span>
             </div>
 
-            <div className="relative z-10 w-full mb-12 sm:mb-20">
+            <div className="relative z-10 w-full mb-12 sm:mb-10">
                 <Link href="/" className="inline-flex items-center gap-2 text-gray-500 hover:text-white transition-colors mb-8 font-mono text-xs uppercase tracking-widest">
                     <ChevronLeft size={14} /> Back to Portfolio
                 </Link>
@@ -79,7 +79,7 @@ export default function ComponentsLayout({ children }: { children: React.ReactNo
                             key={comp.id}
                             href={comp.href}
                             className={`p-4 border text-left transition-all duration-300 font-mono text-sm relative group
-                                ${pathname === comp.href 
+                                ${pathname === comp.href
                                     ? (theme === 'light' ? 'bg-black text-white border-black' : 'bg-white/10 border-white/30 text-white')
                                     : (theme === 'light' ? 'bg-white text-gray-400 border-gray-100 hover:border-gray-300' : 'bg-transparent border-white/5 text-gray-500 hover:border-white/20')
                                 }`}

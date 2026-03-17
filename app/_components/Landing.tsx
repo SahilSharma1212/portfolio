@@ -3,11 +3,16 @@
 import { memo, useEffect, useRef } from "react";
 import gsap from "gsap";
 import { motion, Variants } from "framer-motion";
+import Link from 'next/link';
+import { useThemeStore } from '@/store/themeStore';
+import AnimatedBorder from './AnimatedBorder';
 
 function Landing() {
     const containerRef = useRef<HTMLDivElement>(null);
     const sahilBoxRef = useRef<HTMLDivElement>(null);
     const sharmaBoxRef = useRef<HTMLDivElement>(null);
+    const { theme } = useThemeStore();
+
     const containerVariants: Variants = {
         hidden: { opacity: 0 },
         visible: {
@@ -33,9 +38,9 @@ function Landing() {
 
     const splitText = (text: string) =>
         text.split("").map((char, i) => (
-            <motion.span 
-                key={i} 
-                variants={charVariants} 
+            <motion.span
+                key={i}
+                variants={charVariants}
                 className="char inline-block"
             >
                 {char === " " ? "\u00A0" : char}
@@ -72,10 +77,13 @@ function Landing() {
     } as React.CSSProperties;
 
     return (
-        <div className="min-h-screen w-screen flex items-center justify-center bg-linear-to-br from-[#070707] to-[#030303] via-[#090909] text-white overflow-hidden p-4 sm:p-6 md:p-8 relative">
+        <div id="home" className={`min-h-screen w-screen flex items-center justify-center transition-all duration-700 ${theme === 'light'
+            ? 'bg-linear-to-br from-white to-neutral-50 text-neutral-900'
+            : 'bg-linear-to-br from-[#070707] to-[#030303] via-[#090909] text-white'
+            } overflow-hidden p-4 sm:p-6 md:p-8 relative`}>
             {/* Background gradients */}
             <div className="fixed inset-0 -z-10 overflow-hidden">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(50,50,50,0.15)_0%,transparent_50%)]" />
+                <div className={`absolute inset-0 transition-opacity duration-700 ${theme === 'light' ? 'opacity-30' : 'opacity-100'} bg-[radial-gradient(circle_at_50%_0%,rgba(50,50,50,0.15)_0%,transparent_50%)]`} />
                 <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-blue-900/10 rounded-full blur-[120px]" />
                 <div className="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] bg-neutral-800/20 rounded-full blur-[120px]" />
             </div>
@@ -89,7 +97,8 @@ function Landing() {
                         duration: 1.2,
                         ease: "easeOut",
                     }}
-                    className="text-[20vw] md:text-[18vw] lg:text-[16vw] font-black uppercase tracking-[0.22em] text-white/50 leading-none"
+                    className={`text-[20vw] md:text-[18vw] lg:text-[16vw] font-black uppercase tracking-[0.22em] leading-none transition-colors duration-700 ${theme === 'light' ? 'text-black/5' : 'text-white/5'
+                        }`}
                 >
                     Portfolio
                 </motion.span>
@@ -104,23 +113,23 @@ function Landing() {
                     transition={{ duration: 1.4, ease: "easeOut", delay: 0.5 }}
                     className="absolute top-[10%] right-[8%] w-[180px] h-[180px]"
                 >
-                    <div className="absolute left-1/4 top-0 h-full w-px bg-linear-to-b from-transparent via-white/30 to-transparent" />
-                    <div className="absolute left-2/4 top-0 h-full w-px bg-linear-to-b from-transparent via-white/30 to-transparent" />
-                    <div className="absolute left-3/4 top-0 h-full w-px bg-linear-to-b from-transparent via-white/30 to-transparent" />
+                    <div className={`absolute left-1/4 top-0 h-full w-px transition-colors duration-700 ${theme === 'light' ? 'bg-black/50' : 'bg-linear-to-b from-transparent via-white/50 to-transparent'}`} />
+                    <div className={`absolute left-2/4 top-0 h-full w-px transition-colors duration-700 ${theme === 'light' ? 'bg-black/50' : 'bg-linear-to-b from-transparent via-white/50 to-transparent'}`} />
+                    <div className={`absolute left-3/4 top-0 h-full w-px transition-colors duration-700 ${theme === 'light' ? 'bg-black/50' : 'bg-linear-to-b from-transparent via-white/50 to-transparent'}`} />
 
-                    <div className="absolute top-1/4 left-0 w-full h-px bg-linear-to-r from-transparent via-white/30 to-transparent" />
-                    <div className="absolute top-2/4 left-0 w-full h-px bg-linear-to-r from-transparent via-white/30 to-transparent" />
-                    <div className="absolute top-3/4 left-0 w-full h-px bg-linear-to-r from-transparent via-white/30 to-transparent" />
+                    <div className={`absolute top-1/4 left-0 w-full h-px transition-colors duration-700 ${theme === 'light' ? 'bg-black/50' : 'bg-linear-to-r from-transparent via-white/50 to-transparent'}`} />
+                    <div className={`absolute top-2/4 left-0 w-full h-px transition-colors duration-700 ${theme === 'light' ? 'bg-black/50' : 'bg-linear-to-r from-transparent via-white/50 to-transparent'}`} />
+                    <div className={`absolute top-3/4 left-0 w-full h-px transition-colors duration-700 ${theme === 'light' ? 'bg-black/50' : 'bg-linear-to-r from-transparent via-white/50 to-transparent'}`} />
 
                     <motion.div
-                        className="absolute w-px h-14 bg-linear-to-b from-transparent via-white to-transparent rounded-full shadow-xs shadow-white/10"
+                        className={`absolute w-px h-14 bg-linear-to-b from-transparent via-${theme === 'light' ? 'black' : 'white'} to-transparent rounded-full shadow-xs shadow-${theme === 'light' ? 'black' : 'white'}/30`}
                         style={{ left: "25%", top: "0%" }}
                         animate={{ top: ["0%", "100%"] }}
                         transition={{ duration: 7, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
                     />
 
                     <motion.div
-                        className="absolute w-14 h-px bg-linear-to-r from-transparent via-white to-transparent rounded-full shadow-xs shadow-white/10"
+                        className={`absolute w-14 h-px bg-linear-to-r from-transparent via-${theme === 'light' ? 'black' : 'white'} to-transparent rounded-full shadow-xs shadow-${theme === 'light' ? 'black' : 'white'}/30`}
                         style={{ left: "0%", top: "50%" }}
                         animate={{ left: ["0%", "100%"] }}
                         transition={{ duration: 9, repeat: Infinity, repeatType: "reverse", ease: "linear", delay: 1.2 }}
@@ -134,23 +143,23 @@ function Landing() {
                     transition={{ duration: 1.4, ease: "easeOut", delay: 0.6 }}
                     className="absolute bottom-[10%] left-[8%] w-[180px] h-[180px]"
                 >
-                    <div className="absolute left-1/4 top-0 h-full w-px bg-linear-to-b from-transparent via-white/30 to-transparent" />
-                    <div className="absolute left-2/4 top-0 h-full w-px bg-linear-to-b from-transparent via-white/30 to-transparent" />
-                    <div className="absolute left-3/4 top-0 h-full w-px bg-linear-to-b from-transparent via-white/30 to-transparent" />
+                    <div className={`absolute left-1/4 top-0 h-full w-px bg-linear-to-b from-transparent ${theme === 'light' ? 'bg-black/50' : 'via-white/30'} to-transparent`} />
+                    <div className={`absolute left-2/4 top-0 h-full w-px bg-linear-to-b from-transparent ${theme === 'light' ? 'bg-black/50' : 'via-white/30'} to-transparent`} />
+                    <div className={`absolute left-3/4 top-0 h-full w-px bg-linear-to-b from-transparent ${theme === 'light' ? 'bg-black/50' : 'via-white/30'} to-transparent`} />
 
-                    <div className="absolute top-1/4 left-0 w-full h-px bg-linear-to-r from-transparent via-white/30 to-transparent" />
-                    <div className="absolute top-2/4 left-0 w-full h-px bg-linear-to-r from-transparent via-white/30 to-transparent" />
-                    <div className="absolute top-3/4 left-0 w-full h-px bg-linear-to-r from-transparent via-white/30 to-transparent" />
+                    <div className={`absolute top-1/4 left-0 w-full h-px bg-linear-to-r from-transparent ${theme === 'light' ? 'bg-black/50' : 'via-white/30'} to-transparent`} />
+                    <div className={`absolute top-2/4 left-0 w-full h-px bg-linear-to-r from-transparent ${theme === 'light' ? 'bg-black/50' : 'via-white/30'} to-transparent`} />
+                    <div className={`absolute top-3/4 left-0 w-full h-px bg-linear-to-r from-transparent ${theme === 'light' ? 'bg-black/50' : 'via-white/30'} to-transparent`} />
 
                     <motion.div
-                        className="absolute w-px h-14 bg-linear-to-b from-transparent via-white to-transparent rounded-full shadow-xs shadow-white/10"
+                        className={`absolute w-px h-14 bg-linear-to-b from-transparent via-${theme === 'light' ? 'black' : 'white'} to-transparent rounded-full shadow-xs shadow-${theme === 'light' ? 'black' : 'white'}/50`}
                         style={{ left: "75%", top: "0%" }}
                         animate={{ top: ["0%", "100%"] }}
                         transition={{ duration: 8.5, repeat: Infinity, repeatType: "reverse", ease: "linear", delay: 2.4 }}
                     />
 
                     <motion.div
-                        className="absolute w-14 h-px bg-linear-to-r from-transparent via-white to-transparent rounded-full shadow-xs shadow-white/10"
+                        className={`absolute w-14 h-px bg-linear-to-r from-transparent via-${theme === 'light' ? 'black' : 'white'} to-transparent rounded-full shadow-xs shadow-${theme === 'light' ? 'black' : 'white'}/50`}
                         style={{ left: "0%", top: "25%" }}
                         animate={{ left: ["0%", "100%"] }}
                         transition={{ duration: 6.8, repeat: Infinity, repeatType: "reverse", ease: "linear", delay: 0.8 }}
@@ -164,10 +173,10 @@ function Landing() {
                     transition={{ duration: 1.5, ease: "easeOut", delay: 0.7 }}
                     className="absolute top-[10%] right-[8%] w-[160px] h-[160px]"
                 >
-                    <div className="absolute left-1/3 top-0 h-full w-px bg-white/20" />
-                    <div className="absolute left-2/3 top-0 h-full w-px bg-white/20" />
-                    <div className="absolute top-1/3 left-0 w-full h-px bg-white/20" />
-                    <div className="absolute top-2/3 left-0 w-full h-px bg-white/20" />
+                    <div className={`absolute left-1/3 top-0 h-full w-px ${theme === 'light' ? 'bg-black/50' : 'bg-white/50'}`} />
+                    <div className={`absolute left-2/3 top-0 h-full w-px ${theme === 'light' ? 'bg-black/50' : 'bg-white/50'}`} />
+                    <div className={`absolute top-1/3 left-0 w-full h-px ${theme === 'light' ? 'bg-black/50' : 'bg-white/50'}`} />
+                    <div className={`absolute top-2/3 left-0 w-full h-px ${theme === 'light' ? 'bg-black/50' : 'bg-white/50'}`} />
                 </motion.div>
 
                 {/* Smaller grid – bottom left */}
@@ -177,10 +186,10 @@ function Landing() {
                     transition={{ duration: 1.5, ease: "easeOut", delay: 0.9 }}
                     className="absolute bottom-[10%] left-[8%] w-[160px] h-[160px]"
                 >
-                    <div className="absolute left-1/3 top-0 h-full w-px bg-white/20" />
-                    <div className="absolute left-2/3 top-0 h-full w-px bg-white/20" />
-                    <div className="absolute top-1/3 left-0 w-full h-px bg-white/20" />
-                    <div className="absolute top-2/3 left-0 w-full h-px bg-white/20" />
+                    <div className={`absolute left-1/3 top-0 h-full w-px ${theme === 'light' ? 'bg-black/50' : 'bg-white/50'}`} />
+                    <div className={`absolute left-2/3 top-0 h-full w-px ${theme === 'light' ? 'bg-black/50' : 'bg-white/50'}`} />
+                    <div className={`absolute top-1/3 left-0 w-full h-px ${theme === 'light' ? 'bg-black/50' : 'bg-white/50'}`} />
+                    <div className={`absolute top-2/3 left-0 w-full h-px ${theme === 'light' ? 'bg-black/50' : 'bg-white/50'}`} />
                 </motion.div>
             </div>
 

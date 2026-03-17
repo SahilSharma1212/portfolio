@@ -1,88 +1,15 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import gsap from 'gsap';
 import AnimatedBorder from './AnimatedBorder';
 import { FaGithub, FaExternalLinkAlt, FaTimes } from 'react-icons/fa';
+import { projects } from '../_data/projects';
+import { useThemeStore } from '@/store/themeStore';
 
 // --- DATA ---
-const projects = [
-    {
-        title: 'E-Malkhana',
-        category: 'Digital Evidence Management',
-        images: ['/emalkhana1.png', '/emalkhana2.png', '/emalkhana3.png'],
-        desc: 'Digital Evidence Management System for law enforcement agencies, built with Next.js, Supabase, and TailwindCSS. The application enables secure storage and management of case-related evidence (images, PDFs) with advanced search, category-based filtering, and role-based access control.',
-        features: [
-            'Advanced Search, Filtering & Pagination',
-            'Role-Based Access Control',
-            'Secure File Upload & Deletion',
-            'Supabase Storage Management',
-            'Responsive & Accessible UI',
-        ],
-        techStack: ['Next.js', 'Supabase', 'TailwindCSS', 'ShadCn', 'JWT', 'REST API', 'Firebase'],
-        github: 'https://github.com/SahilSharma1212/E-Malkhana',
-        live: 'https://e-malkhana-smoky.vercel.app/'
-    },
-    {
-        title: 'RepoRama',
-        category: 'Developer Productivity / AI',
-        images: ['/reporama1.png', '/reporama2.png', '/reporama3.png'],
-        desc: 'AI-powered GitHub repository intelligence platform that analyzes repositories to generate structured insights such as code summaries, architecture breakdowns, feature explanations, and visualized repo analytics. Designed to help developers, recruiters, and learners quickly understand real-world codebases.',
-        features: [
-            'GitHub Repository Analysis via GitHub API',
-            'AI-Based Code & Architecture Summarization',
-            'Spotify-Wrapped Style Developer Insights (Planned)',
-            'Structured Feature & Tech Stack Extraction',
-            'Multi-Repo Comparison & Visualization (Planned)',
-        ],
-        techStack: [
-            'Next.js',
-            'Supabase',
-            'Clerk Auth',
-            'GitHub API',
-            'LangChain',
-            'Gemini API',
-            'Zustand',
-            'ShadCn',
-            'Framer Motion',
-        ],
-        github: 'https://github.com/SahilSharma1212/RepoRama',
-        live: 'https://repo-rama.vercel.app/'
-    },
-    {
-        title: 'AI Resume Builder',
-        category: 'AI / Productivity',
-        images: ['/resume1.png', '/resume2.png', '/resume3.png'],
-        desc: 'AI-powered resume builder that generates job-tailored resumes based on user input. Integrates Gemini API to auto-fill relevant achievements, skills, and experience. Includes editable sections, live PDF preview, and export to Word & PDF.',
-        features: [
-            'AI Prompt Engineering',
-            'User Authentication (OAuth & Email)',
-            'Dynamic PDF Generation',
-            'Form Handling & Validation',
-            'Resume Parsing & Exporting',
-        ],
-        techStack: ['Next.js', 'MongoDB', 'Tailwind', 'Gemini-API', 'JWT', 'ShadCn', 'Mailtrap'],
-        github: 'https://github.com/SahilSharma1212/Next.js-AI-Powered-Resume-Builder',
-        live: 'https://next-js-ai-powered-resume-builder.vercel.app/'
-    },
-    {
-        title: 'Drawing App',
-        category: 'Web App',
-        images: ['/drawing_app_1.png', '/drawing_app_2.png', '/drawing_app_3.png'],
-        desc: 'A feature-rich web-based drawing application designed for creative freedom. Users can draw with various brush sizes and colors, erase, undo/redo actions, and export their artwork as images. Fully responsive for mobile/tablet use.',
-        features: [
-            'Canvas-based Drawing',
-            'Undo/Redo Logic',
-            'Image Exporting',
-            'Responsive UI Design',
-            'Konva State Management',
-        ],
-        techStack: ['React', 'Canvas API', 'Tailwind', 'Konva', 'Framer-Motions'],
-        github: 'https://github.com/SahilSharma1212/drawing-app-using-Konva',
-        live: 'https://sahilsharma1212.github.io/drawing-app-using-Konva/'
-    },
-];
+// --- DATA REMOVED ---
 
 
 // --- COMPONENT ---
@@ -123,35 +50,88 @@ export default function Projects() {
     }, [isModalOpen]);
 
 
+    const { theme } = useThemeStore();
+
+    const containerVariants: Variants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.05,
+                delayChildren: 0.2,
+            }
+        }
+    };
+
+    const charVariants: Variants = {
+        hidden: { y: 100, opacity: 0 },
+        visible: {
+            y: 0,
+            opacity: 1,
+            transition: {
+                duration: 1.4,
+                ease: [0.22, 1, 0.36, 1],
+            }
+        }
+    };
+
+    const splitText = (text: string) =>
+        text.split("").map((char, i) => (
+            <motion.span
+                key={i}
+                variants={charVariants}
+                className="char inline-block"
+            >
+                {char === " " ? "\u00A0" : char}
+            </motion.span>
+        ));
+
+    const itemVariants: Variants = {
+        hidden: { y: 30, opacity: 0 },
+        visible: {
+            y: 0,
+            opacity: 1,
+            transition: {
+                duration: 0.8,
+                ease: [0.22, 1, 0.36, 1],
+            }
+        }
+    };
+
     return (
-        <div id="projects" className="min-h-screen w-screen bg-linear-to-bl from-[#070707] to-[#030303] via-[#090909] text-white overflow-hidden p-4 sm:p-6 md:p-12 lg:p-20 relative flex flex-col items-center">
+        <div id="projects" className={`min-h-screen w-screen transition-colors duration-700 ${theme === 'light'
+            ? 'bg-neutral-50 text-neutral-900'
+            : 'bg-linear-to-bl from-[#070707] to-[#030303] via-[#090909] text-white'
+            } overflow-hidden p-4 sm:p-6 md:p-12 lg:p-20 relative flex flex-col items-center`}>
 
             {/* Background gradients */}
             <div className="fixed inset-0 -z-10 overflow-hidden">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(50,50,50,0.1)_0%,transparent_50%)]" />
+                <div className={`absolute inset-0 transition-opacity duration-700 ${theme === 'light' ? 'opacity-30' : 'opacity-100'} bg-[radial-gradient(circle_at_50%_0%,rgba(50,50,50,0.1)_0%,transparent_50%)]`} />
             </div>
 
             {/* Background "PROJECTS" Text */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden z-0">
                 <motion.span
                     initial={{ opacity: 0, scale: 1.04 }}
-                    whileInView={{ opacity: 0.03, scale: 1 }}
+                    whileInView={{ opacity: theme === 'light' ? 0.05 : 0.03, scale: 1 }}
                     viewport={{ once: false }}
                     transition={{ duration: 1.2, ease: "easeOut" }}
-                    className="text-[18vw] md:text-[16vw] lg:text-[14vw] font-black uppercase tracking-widest text-white/50 leading-none whitespace-nowrap"
+                    className={`text-[12vw] md:text-[10vw] font-black uppercase tracking-[0.3em] leading-none transition-colors duration-700 ${theme === 'light' ? 'text-black' : 'text-white'
+                        }`}
                 >
                     PROJECTS
                 </motion.span>
             </div>
 
-            <div className="relative z-10 w-full mb-12 sm:mb-20 mt-10 text-center">
+            <div className="relative z-10 w-full mb-12 sm:mb-10 text-center">
                 <motion.h1
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: false }}
-                    className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extralight font-mono tracking-tighter"
+                    variants={containerVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extralight font-mono tracking-tighter overflow-hidden"
                 >
-                    Featured Work
+                    {splitText("Featured Work")}
                 </motion.h1>
             </div>
 
@@ -178,29 +158,28 @@ export default function Projects() {
                                     return (
                                         <motion.button
                                             key={i}
-                                            initial={{ opacity: 0, y: 30 }}
-                                            whileInView={{ opacity: 1, y: 0 }}
-                                            transition={{
-                                                delay: i * 0.12,
-                                                duration: 0.5,
-                                                ease: "easeOut"
-                                            }}
-                                            viewport={{ once: false }}
+                                            variants={itemVariants}
                                             onClick={() => setActiveIndex(i)}
-                                            className={`relative group flex flex-col items-center justify-center text-center p-2 sm:p-4 transition-all duration-300 border border-white/5 ${isActive ? "bg-white/10 border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.05)]" : "bg-transparent hover:bg-white/5"
+                                            className={`relative group flex flex-col items-center justify-center text-center p-2 sm:p-4 transition-all duration-300 border ${isActive
+                                                ? (theme === 'light' ? "bg-black/5 border-black/20 shadow-[0_0_15px_rgba(0,0,0,0.05)]" : "bg-white/10 border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.05)]")
+                                                : (theme === 'light' ? "bg-transparent border-black/5 hover:bg-black/5" : "bg-transparent border-white/5 hover:bg-white/5")
                                                 }`}
                                         >
                                             {isActive && (
                                                 <motion.div
                                                     layoutId="activeIndicator"
-                                                    className="absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 w-1/3 bg-white"
+                                                    className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 w-1/3 ${theme === 'light' ? 'bg-black' : 'bg-white'}`}
                                                 />
                                             )}
-                                            <span className="text-base sm:text-lg font-mono text-white/90 mb-1">
+                                            <span className={`text-base sm:text-lg font-mono mb-1 transition-colors duration-300 ${theme === 'light' ? (isActive ? 'text-black font-bold' : 'text-black/60') : 'text-white/90'
+                                                }`}>
                                                 0{i + 1}
                                             </span>
                                             <div className="flex flex-col flex-1 w-full items-center">
-                                                <span className={`font-medium transition-colors text-[10px] sm:text-xs tracking-wider uppercase line-clamp-1 ${isActive ? "text-white" : "text-neutral-400 group-hover:text-neutral-300"}`}>
+                                                <span className={`font-medium transition-colors text-[10px] sm:text-xs tracking-wider uppercase line-clamp-1 ${isActive
+                                                    ? (theme === 'light' ? "text-black font-bold" : "text-white")
+                                                    : (theme === 'light' ? "text-neutral-600 group-hover:text-black" : "text-neutral-400 group-hover:text-neutral-300")
+                                                    }`}>
                                                     {project.title}
                                                 </span>
                                             </div>
@@ -256,8 +235,10 @@ export default function Projects() {
                                                 transformOrigin: "bottom center",
                                                 zIndex: projects.length - distance,
                                             }}
-                                            className={`absolute inset-0 w-full h-full border border-white/10 bg-[#0c0c0c] shadow-[0_20px_50px_rgba(0,0,0,0.8)] overflow-hidden cursor-pointer ${isFront ? "group ring-1 ring-white/20" : ""
-                                                }`}
+                                            className={`absolute inset-0 w-full h-full border overflow-hidden cursor-pointer transition-all duration-500 ${isFront
+                                                ? (theme === 'light' ? "ring-1 ring-black/10 shadow-[0_20px_50px_rgba(0,0,0,0.1)] border-black/10" : "group ring-1 ring-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.8)] border-white/10")
+                                                : (theme === 'light' ? "border-black/5 shadow-md" : "border-white/10 shadow-2xl")
+                                                } ${theme === 'light' ? 'bg-white' : 'bg-[#0c0c0c]'}`}
                                             onClick={() => {
                                                 if (!isFront) {
                                                     setActiveIndex(i);
@@ -271,27 +252,25 @@ export default function Projects() {
                                                 <img
                                                     src={project.images[0]}
                                                     alt={project.title}
-                                                    className="w-full h-full object-cover opacity-60 group-hover:opacity-90 group-hover:scale-102 transition-all duration-700"
+                                                    className={`w-full h-full object-cover transition-all duration-700 ${isFront ? "group-hover:scale-105 opacity-100" : "opacity-40"
+                                                        }`}
                                                     onError={(e) => {
-                                                        (e.target as HTMLImageElement).src = `https://placehold.co/1200x800/101010/303030?text=${encodeURIComponent(project.title)}`;
+                                                        (e.target as HTMLImageElement).src = `https://placehold.co/1200x800/${theme === 'light' ? 'eeeeee/999999' : '101010/303030'}?text=${encodeURIComponent(project.title)}`;
                                                     }}
                                                 />
-                                                <div className="absolute inset-0 bg-linear-to-t from-[#090909] via-[#090909]/60 sm:via-[#090909]/20 to-transparent" />
+                                                <div className={`absolute inset-0 transition-opacity duration-700 ${theme === 'light'
+                                                    ? 'bg-linear-to-t from-white via-white/40 to-transparent opacity-80'
+                                                    : 'bg-linear-to-t from-[#090909] via-[#090909]/60 sm:via-[#090909]/20 to-transparent'
+                                                    }`} />
 
                                                 {isFront && (
-                                                    <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-8 md:p-12 flex items-end justify-between">
-                                                        <div>
-                                                            <h2 className="text-3xl sm:text-4xl md:text-6xl font-mono text-white mb-2 line-clamp-1">{project.title}</h2>
-                                                            <div className="flex flex-wrap gap-2 mt-3">
-                                                                {project.techStack.slice(0, 4).map((tech, idx) => (
-                                                                    <span key={idx} className="px-3 py-1.5 bg-white/10 backdrop-blur-xl text-[10px] md:text-sm text-white uppercase tracking-widest shadow-none">
-                                                                        {tech}
-                                                                    </span>
-                                                                ))}
-                                                            </div>
-                                                        </div>
+                                                    <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-8 md:p-12 flex items-end justify-between z-20">
 
-                                                        <div className="flex-shrink-0 flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 border border-white/20 bg-white/5 backdrop-blur-md group-hover:bg-white group-hover:text-black transition-all shadow-none">
+
+                                                        <div className={`shrink-0 flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 border transition-all shadow-none ${theme === 'light'
+                                                            ? 'border-black/20 bg-black/5 text-black hover:bg-black hover:text-white'
+                                                            : 'border-white/20 bg-white/5 text-white hover:bg-white hover:text-black'
+                                                            }`}>
                                                             <span className="font-mono text-xl sm:text-3xl">+</span>
                                                         </div>
                                                     </div>
@@ -317,18 +296,22 @@ export default function Projects() {
                     >
                         {/* Modal container */}
                         <motion.div
-                            initial={{ scale: 0.95, y: 20 }}
-                            animate={{ scale: 1, y: 0 }}
-                            exit={{ scale: 0.95, y: 20 }}
-                            transition={{ duration: 0.3, ease: "easeOut" }}
-                            className="relative w-full max-w-5xl max-h-[90vh] bg-[#0c0c0c] border border-white/10 overflow-hidden flex flex-col md:flex-row shadow-2xl"
+                            initial={{ scale: 0.95, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.95, opacity: 0 }}
+                            className={`relative w-full max-w-6xl h-[90vh] overflow-hidden flex flex-col md:flex-row transition-colors duration-500 ${theme === 'light' ? 'bg-white text-black' : 'bg-[#0f0f0f] text-white'
+                                }`}
+                            onClick={(e) => e.stopPropagation()}
                         >
                             {/* Close Button */}
                             <button
                                 onClick={() => setIsModalOpen(false)}
-                                className="absolute top-4 right-4 z-50 p-3 bg-black/50 hover:bg-neutral-700 border border-white/10 text-white  transition-all group"
+                                className={`absolute top-6 right-6 z-50 p-3 backdrop-blur-xl border transition-all duration-300 ${theme === 'light'
+                                    ? 'bg-black/5 border-black/10 text-black hover:bg-black hover:text-white'
+                                    : 'bg-white/5 border-white/10 text-white hover:bg-white hover:text-black'
+                                    }`}
                             >
-                                <FaTimes className="w-4 h-4" />
+                                <FaTimes size={20} />
                             </button>
 
                             {/* Left Side: Image Gallery */}
@@ -360,15 +343,31 @@ export default function Projects() {
                                     {activeProject.title}
                                 </h1>
 
-                                <div className="flex gap-4 mb-8 flex-wrap">
+                                <div className="flex gap-4 mb-4">
                                     {activeProject.github && (
-                                        <a href={activeProject.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 border border-white/10 hover:bg-white/10 transition-colors bg-white/5 text-xs font-mono tracking-widest uppercase">
-                                            <FaGithub className="w-4 h-4" /> Code
+                                        <a
+                                            href={activeProject.github}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={`flex-1 flex items-center justify-center gap-2 py-4 border transition-all duration-300 ${theme === 'light'
+                                                ? 'bg-black text-white border-black hover:bg-white hover:text-black'
+                                                : 'bg-white text-black border-white hover:bg-black hover:text-white'
+                                                }`}
+                                        >
+                                            <FaGithub /> GitHub
                                         </a>
                                     )}
                                     {activeProject.live && (
-                                        <a href={activeProject.live} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 bg-white text-black hover:bg-neutral-200 transition-colors text-xs font-mono tracking-widest uppercase">
-                                            <FaExternalLinkAlt className="w-3 h-3" /> Live
+                                        <a
+                                            href={activeProject.live}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={`flex-1 flex items-center justify-center gap-2 py-4 border transition-all duration-300 ${theme === 'light'
+                                                ? 'border-black/20 text-black hover:bg-black/5'
+                                                : 'border-white/20 text-white hover:bg-white/5'
+                                                }`}
+                                        >
+                                            <FaExternalLinkAlt /> Live Demo
                                         </a>
                                     )}
                                 </div>
