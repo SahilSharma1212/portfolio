@@ -89,9 +89,8 @@ const splitWords = (text: string) =>
 const SkillBadge = memo(({ skill, theme }: { skill: any, theme: string }) => (
     <motion.div
         variants={childVariants}
-        className={`relative px-3 py-1.5 sm:px-5 sm:py-2 border transition-all duration-300 group hover:scale-105 transform-gpu ${
-            theme === 'light' ? 'border-black/10 hover:border-black/30' : 'border-white/10 hover:border-white/30'
-        } backdrop-blur-3xl pointer-events-auto overflow-hidden`}
+        className={`relative px-3 py-1.5 sm:px-5 sm:py-2 border transition-all duration-300 group hover:scale-105 transform-gpu ${theme === 'light' ? 'border-black/10 hover:border-black/30' : 'border-white/10 hover:border-white/30'
+            } backdrop-blur-3xl pointer-events-auto overflow-hidden`}
     >
         <motion.div
             animate={{ "--border-progress": [0, 100] } as any}
@@ -102,9 +101,8 @@ const SkillBadge = memo(({ skill, theme }: { skill: any, theme: string }) => (
         </motion.div>
         <div className="flex items-center gap-2 relative z-10">
             {skill.icon && <skill.icon className="w-4 h-4 sm:w-5 sm:h-5 text-neutral-400 group-hover:text-white transition-colors duration-300" />}
-            <span className={`text-[10px] sm:text-xs tracking-[0.2em] font-mono uppercase transition-colors duration-300 ${
-                theme === 'light' ? 'text-neutral-800 group-hover:text-black' : 'text-neutral-400 group-hover:text-white'
-            }`}>
+            <span className={`text-[10px] sm:text-xs tracking-[0.2em] font-mono uppercase transition-colors duration-300 ${theme === 'light' ? 'text-neutral-800 group-hover:text-black' : 'text-neutral-400 group-hover:text-white'
+                }`}>
                 {skill.name}
             </span>
         </div>
@@ -133,9 +131,8 @@ const CategoryCard = memo(({ cat, theme, index }: { cat: any, theme: string, ind
             </motion.div>
 
             <div className="flex items-center gap-4 mb-6 sm:mb-8 relative z-10">
-                <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center transition-colors duration-300 ${
-                    theme === 'light' ? 'bg-black/5 border-black/10' : 'bg-white/5 border-white/10'
-                } border backdrop-blur-3xl`}>
+                <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center transition-colors duration-300 ${theme === 'light' ? 'bg-black/5 border-black/10' : 'bg-white/5 border-white/10'
+                    } border backdrop-blur-3xl`}>
                     {Icon && <Icon className={`w-6 h-6 sm:w-7 sm:h-7 transition-colors duration-300 ${theme === 'light' ? 'text-black' : 'text-white'}`} />}
                 </div>
                 <h2 className={`text-xl sm:text-2xl font-mono uppercase tracking-widest transition-colors duration-300 ${theme === 'light' ? 'text-black' : 'text-white'}`}>
@@ -166,10 +163,10 @@ export default function Skills() {
 
     return (
         <div id="skills" className={`min-h-screen w-screen transition-colors duration-700 ${theme === 'light'
-                ? 'bg-neutral-50 text-neutral-900'
-                : 'bg-linear-to-bl from-[#070707] to-[#030303] via-[#090909] text-white'
+            ? 'bg-neutral-50 text-neutral-900'
+            : 'bg-linear-to-bl from-[#070707] to-[#030303] via-[#090909] text-white'
             } overflow-hidden p-4 sm:p-6 md:p-12 lg:p-20 relative flex flex-col items-center justify-center`}>
-            
+
             <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
                 <div className={`absolute inset-0 transition-opacity duration-700 ${theme === 'light' ? 'opacity-30' : 'opacity-100'} bg-[radial-gradient(circle_at_50%_0%,rgba(50,50,50,0.1)_0%,transparent_50%)]`} />
             </div>
@@ -192,7 +189,7 @@ export default function Skills() {
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true }}
-                    className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extralight font-mono tracking-tighter overflow-hidden"
+                    className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-extralight font-mono tracking-tighter overflow-hidden"
                 >
                     {splitWords("Technical Arsenal")}
                 </motion.h1>
@@ -205,4 +202,4 @@ export default function Skills() {
             </div>
         </div>
     );
-}
+}

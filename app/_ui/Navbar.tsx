@@ -6,6 +6,8 @@ import { useThemeStore } from "@/store/themeStore";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaFileAlt, FaSun, FaMoon, FaBars, FaRobot } from "react-icons/fa";
 import { LuLibrary } from "react-icons/lu";
+import { BiBlock } from "react-icons/bi";
+import { TbComponents } from "react-icons/tb";
 
 const sections = [
     { name: 'Home', id: 'home' },
@@ -109,7 +111,8 @@ function NavbarComponent() {
 
                 {/* 5. Components Button */}
                 <Link href="/components" className={buttonClass} title="Components Showcase" style={{ borderRadius: 4 }}>
-                    Components
+                    <span className="max-sm:hidden">Components</span>
+                    <TbComponents className="sm:hidden" />
                 </Link>
 
 

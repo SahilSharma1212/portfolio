@@ -206,15 +206,14 @@ const DynamicTextLines = memo(({ theme }: { theme: string }) => {
                     <motion.div
                         key={index}
                         initial={{ opacity: 0 }}
-                        animate={{ 
+                        animate={{
                             opacity: isActive ? 1 : 0.2,
                             scale: isActive ? 1.05 : 1,
                             filter: isActive ? "blur(0px)" : "blur(2px)"
                         }}
                         transition={{ duration: 0.5 }}
-                        className={`inline-block font-mono overflow-hidden text-4xl sm:text-5xl md:text-6xl lg:text-7xl ${
-                            theme === 'light' ? 'text-black' : 'text-white'
-                        }`}
+                        className={`inline-block font-mono overflow-hidden text-4xl sm:text-5xl md:text-6xl lg:text-7xl ${theme === 'light' ? 'text-black' : 'text-white'
+                            }`}
                     >
                         {line}
                     </motion.div>
@@ -234,7 +233,7 @@ function Details() {
             ? 'bg-neutral-50 text-neutral-900'
             : 'bg-linear-to-bl to-[#070707] from-[#030303] via-[#090909] text-white'
             } overflow-hidden p-4 sm:p-6 md:p-12 lg:p-20 relative`}>
-            
+
             <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
                 <div className={`absolute inset-0 transition-opacity duration-700 ${theme === 'light' ? 'opacity-30' : 'opacity-100'} bg-[radial-gradient(circle_at_50%_100%,rgba(50,50,50,0.1)_0%,transparent_50%)]`} />
             </div>
@@ -264,7 +263,7 @@ function Details() {
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true }}
-                    className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extralight font-mono tracking-tighter mb-6 overflow-hidden"
+                    className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-extralight font-mono tracking-tighter mb-6 overflow-hidden"
                 >
                     {splitWords("Guess What Recruiters")}
                 </motion.h1>
@@ -377,4 +376,4 @@ function Details() {
     );
 }
 
-export default memo(Details)
+export default memo(Details)
