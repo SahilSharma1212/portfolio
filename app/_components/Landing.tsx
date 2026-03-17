@@ -2,13 +2,13 @@
 
 import { memo, useEffect, useRef } from "react";
 import gsap from "gsap";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
 function Landing() {
     const containerRef = useRef<HTMLDivElement>(null);
     const sahilBoxRef = useRef<HTMLDivElement>(null);
     const sharmaBoxRef = useRef<HTMLDivElement>(null);
-    const containerVariants = {
+    const containerVariants: Variants = {
         hidden: { opacity: 0 },
         visible: {
             opacity: 1,
@@ -19,7 +19,7 @@ function Landing() {
         }
     };
 
-    const charVariants = {
+    const charVariants: Variants = {
         hidden: { y: 100, opacity: 0 },
         visible: {
             y: 0,
