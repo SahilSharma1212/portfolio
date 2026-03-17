@@ -136,8 +136,8 @@ function Details() {
 
     return (
         <div id="about" className={`min-h-screen w-screen transition-colors duration-700 ${theme === 'light'
-                ? 'bg-neutral-50 text-neutral-900'
-                : 'bg-linear-to-bl to-[#070707] from-[#030303] via-[#090909] text-white'
+            ? 'bg-neutral-50 text-neutral-900'
+            : 'bg-linear-to-bl to-[#070707] from-[#030303] via-[#090909] text-white'
             } overflow-hidden p-4 sm:p-6 md:p-12 lg:p-20 relative`}>
             {/* Background gradients to match Landing */}
             <div className="fixed inset-0 -z-10 overflow-hidden">
@@ -332,7 +332,7 @@ function Details() {
                     </div>
 
                     <div className="relative z-10">
-                        <motion.h2 
+                        <motion.h2
                             variants={containerVariants}
                             initial="hidden"
                             whileInView="visible"
@@ -359,7 +359,7 @@ function Details() {
             {/* ACADEMICS */}
             <div className="relative my-10 p-6 sm:p-10 backdrop-blur-3xl">
                 <AnimatedBorder />
-                <motion.h1 
+                <motion.h1
                     variants={containerVariants}
                     initial="hidden"
                     whileInView="visible"
@@ -385,7 +385,7 @@ function Details() {
                             {/* Detail View */}
                             <div className="h-20 flex flex-col items-center justify-center bg-white/5 font-mono">
                                 <span className="text-sm text-neutral-300">Delhi Public School</span>
-                                <span className="text-[10px] text-neutral-500 uppercase tracking-widest mt-1">Class of 2019</span>
+                                <span className="text-[10px] text-neutral-500 uppercase tracking-widest mt-1">DPS Bhilai | 2020</span>
                             </div>
                         </motion.div>
                     </div>
@@ -404,7 +404,7 @@ function Details() {
                             </div>
                             <div className="h-20 flex flex-col items-center justify-center bg-white/5 font-mono">
                                 <span className="text-sm text-neutral-300">Delhi Public School</span>
-                                <span className="text-[10px] text-neutral-500 uppercase tracking-widest mt-1">Class of 2021</span>
+                                <span className="text-[10px] text-neutral-500 uppercase tracking-widest mt-1">DPS Bhilai | 2022</span>
                             </div>
                         </motion.div>
                     </div>
@@ -423,7 +423,7 @@ function Details() {
                             </div>
                             <div className="h-20 flex flex-col items-center justify-center bg-white/5 font-mono">
                                 <span className="text-sm text-neutral-300">Computer Science</span>
-                                <span className="text-[10px] text-neutral-500 uppercase tracking-widest mt-1">2021 — 2025</span>
+                                <span className="text-[10px] text-neutral-500 uppercase tracking-widest mt-1">BIT Durg | 2026</span>
                             </div>
                         </motion.div>
                     </div>
