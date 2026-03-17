@@ -1,9 +1,8 @@
 "use client";
 
-import { motion, Variants } from "framer-motion";
+import { motion, Variants, m } from "framer-motion";
 import { useThemeStore } from "@/store/themeStore";
-import { useEffect, useState, useRef } from "react";
-import gsap from "gsap";
+import { useEffect, useState, useRef, useMemo } from "react";
 import AnimatedBorder from "./AnimatedBorder";
 import { BiGitRepoForked } from "react-icons/bi";
 import { LuUsers } from "react-icons/lu";
@@ -15,13 +14,66 @@ import { memo } from "react";
 
 const lines = ['I run, ', 'I build, ', 'I code'];
 
-function Details() {
-    const { theme } = useThemeStore();
-    const githubBoxRef = useRef<HTMLDivElement>(null);
-    const containerRef = useRef<HTMLDivElement>(null);
-    const aboutMeBoxRef = useRef<HTMLDivElement>(null);
+const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.04,
+            delayChildren: 0.1,
+        }
+    }
+};
 
-    const [activeLineIndex, setActiveLineIndex] = useState(0);
+const wordVariants: Variants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+        y: 0,
+        opacity: 1,
+        transition: {
+            duration: 0.8,
+            ease: [0.22, 1, 0.36, 1],
+        }
+    }
+};
+
+const charVariants: Variants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+        y: 0,
+        opacity: 1,
+        transition: {
+            duration: 0.4,
+            ease: [0.22, 1, 0.36, 1],
+        }
+    }
+};
+
+const splitWords = (text: string) =>
+    text.split(" ").map((word, i) => (
+        <span key={i} className="inline-block whitespace-nowrap mr-[0.2em]">
+            <motion.span
+                variants={wordVariants}
+                className="inline-block"
+            >
+                {word}
+            </motion.span>
+        </span>
+    ));
+
+const splitText = (text: string) =>
+    text.split("").map((char, i) => (
+        <motion.span
+            key={i}
+            variants={charVariants}
+            className="char inline-block"
+        >
+            {char === " " ? "\u00A0" : char}
+        </motion.span>
+    ));
+
+const GithubStats = memo(() => {
+    const { theme } = useThemeStore();
     const [githubData, setGithubData] = useState({
         repos: 0,
         followers: 0,
@@ -32,11 +84,8 @@ function Details() {
     useEffect(() => {
         const fetchGithubData = async () => {
             try {
-                // Fetch basic user data
                 const userRes = await fetch("https://api.github.com/users/SahilSharma1212");
                 const userData = await userRes.json();
-
-                // Fetch repos to calculate total stars
                 const reposRes = await fetch("https://api.github.com/users/SahilSharma1212/repos?per_page=100");
                 const reposData = await reposRes.json();
 
@@ -56,76 +105,8 @@ function Details() {
                 console.error("Error fetching GitHub data:", error);
             }
         };
-
         fetchGithubData();
     }, []);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setActiveLineIndex((prevIndex: number) => (prevIndex + 1) % lines.length);
-        }, 2000);
-        return () => clearInterval(interval);
-    }, []);
-
-    useEffect(() => {
-        const tl = gsap.timeline();
-
-        if (githubBoxRef.current) {
-            tl.to(githubBoxRef.current, {
-                "--border-progress": 100,
-                duration: 6,
-                ease: "none",
-                repeat: -1,
-            });
-        }
-        if (aboutMeBoxRef.current) {
-            tl.to(aboutMeBoxRef.current, {
-                "--border-progress": 100,
-                duration: 6,
-                ease: "none",
-                repeat: -1,
-            }, "-=3"); // offset to feel more dynamic
-        }
-    }, []);
-
-    const borderStyles = {
-        "--border-progress": 0,
-    } as React.CSSProperties;
-
-    const containerVariants: Variants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.04,
-                delayChildren: 0.2,
-            }
-        }
-    };
-
-    const charVariants: Variants = {
-        hidden: { y: 100, opacity: 0 },
-        visible: {
-            y: 0,
-            opacity: 1,
-            transition: {
-                duration: 1.4,
-                ease: [0.22, 1, 0.36, 1],
-            }
-        }
-    };
-
-    const splitText = (text: string) =>
-        text.split("").map((char, i) => (
-            <motion.span
-                key={i}
-                variants={charVariants}
-                className="char inline-block"
-            >
-                {char === " " ? "\u00A0" : char}
-            </motion.span>
-        ));
-
 
     const handleDownloadResume = () => {
         const link = document.createElement('a');
@@ -135,32 +116,149 @@ function Details() {
     };
 
     return (
+        <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:col-span-2 relative p-6 sm:p-10 flex flex-col items-center justify-center backdrop-blur-3xl min-h-[300px] transform-gpu overflow-hidden"
+        >
+            <motion.div
+                animate={{ "--border-progress": [0, 100] } as any}
+                transition={{ duration: 6, ease: "linear", repeat: Infinity }}
+                className="absolute inset-0 pointer-events-none"
+            >
+                <AnimatedBorder />
+            </motion.div>
+
+            <div className="relative z-10 w-full mb-8">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 text-center">
+                    {[
+                        { icon: BiGitRepoForked, label: "Repos", value: githubData.repos },
+                        { icon: LuUsers, label: "Followers", value: githubData.followers },
+                        { icon: FiUserPlus, label: "Following", value: githubData.following },
+                        { icon: Star, label: "Stars", value: githubData.stars },
+                    ].map((stat, i) => (
+                        <div key={i} className="relative flex flex-col items-center justify-center p-4 border border-white/10 hover:bg-white/5 transition-colors group">
+                            <stat.icon className="w-5 h-5 sm:w-6 sm:h-6 mb-2 text-neutral-400 group-hover:text-white transition-colors" />
+                            <span className="text-xl sm:text-2xl font-mono font-light">{stat.value}</span>
+                            <span className="text-[10px] sm:text-xs tracking-widest text-neutral-500 uppercase mt-1">{stat.label}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            <a
+                href="https://github.com/SahilSharma1212"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative z-10 w-full flex justify-center"
+            >
+                <img
+                    src="https://ghchart.rshah.org/0d1117/SahilSharma1212"
+                    alt="GitHub Contributions"
+                    loading="lazy"
+                    className="w-full opacity-80 hover:opacity-100 transition-opacity duration-500 max-w-4xl transform-gpu"
+                />
+            </a>
+
+            <div className="flex items-center justify-center gap-4 sm:gap-6 mt-8 relative z-10 w-full flex-wrap">
+                {[
+                    { icon: IoLogoGithub, href: "https://github.com/SahilSharma1212" },
+                    { icon: IoMdMail, href: "mailto:sahilbhaisharma1212@gmail.com" },
+                    { icon: IoLogoLinkedin, href: "https://www.linkedin.com/in/sahil-sharma-822a752a9/" },
+                    { icon: IoDocumentTextSharp, onClick: handleDownloadResume },
+                    { icon: IoCallSharp, href: "tel:+918821809999" },
+                ].map((link, i) => (
+                    <a
+                        key={i}
+                        href={link.href}
+                        onClick={link.onClick}
+                        target={link.href ? "_blank" : undefined}
+                        rel={link.href ? "noopener noreferrer" : undefined}
+                        className={`relative flex items-center justify-center p-3 sm:p-4 border transition-all duration-300 group cursor-pointer ${theme === 'light' ? 'border-black/10 hover:bg-black/5' : 'border-white/10 hover:bg-white/5'}`}
+                    >
+                        <link.icon className={`w-6 h-6 sm:w-7 sm:h-7 transition-all duration-300 ${theme === 'light' ? 'text-neutral-600 group-hover:text-black group-hover:scale-110' : 'text-neutral-400 group-hover:text-white group-hover:scale-110'}`} />
+                    </a>
+                ))}
+            </div>
+        </motion.div>
+    );
+});
+
+GithubStats.displayName = "GithubStats";
+
+const DynamicTextLines = memo(({ theme }: { theme: string }) => {
+    const [activeLineIndex, setActiveLineIndex] = useState(0);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setActiveLineIndex((prevIndex) => (prevIndex + 1) % lines.length);
+        }, 2000);
+        return () => clearInterval(interval);
+    }, []);
+
+    return (
+        <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2">
+            {lines.map((line, index) => {
+                const isActive = index === activeLineIndex;
+                return (
+                    <motion.div
+                        key={index}
+                        initial={{ opacity: 0 }}
+                        animate={{ 
+                            opacity: isActive ? 1 : 0.2,
+                            scale: isActive ? 1.05 : 1,
+                            filter: isActive ? "blur(0px)" : "blur(2px)"
+                        }}
+                        transition={{ duration: 0.5 }}
+                        className={`inline-block font-mono overflow-hidden text-4xl sm:text-5xl md:text-6xl lg:text-7xl ${
+                            theme === 'light' ? 'text-black' : 'text-white'
+                        }`}
+                    >
+                        {line}
+                    </motion.div>
+                );
+            })}
+        </div>
+    );
+});
+
+DynamicTextLines.displayName = "DynamicTextLines";
+
+function Details() {
+    const { theme } = useThemeStore();
+
+    return (
         <div id="about" className={`min-h-screen w-screen transition-colors duration-700 ${theme === 'light'
             ? 'bg-neutral-50 text-neutral-900'
             : 'bg-linear-to-bl to-[#070707] from-[#030303] via-[#090909] text-white'
             } overflow-hidden p-4 sm:p-6 md:p-12 lg:p-20 relative`}>
-            {/* Background gradients to match Landing */}
-            <div className="fixed inset-0 -z-10 overflow-hidden">
+            
+            <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
                 <div className={`absolute inset-0 transition-opacity duration-700 ${theme === 'light' ? 'opacity-30' : 'opacity-100'} bg-[radial-gradient(circle_at_50%_100%,rgba(50,50,50,0.1)_0%,transparent_50%)]`} />
             </div>
 
-            {/* Background "ABOUT ME" */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden z-0">
                 <motion.span
-                    initial={{ opacity: 0, scale: 1.04 }}
+                    initial={{ opacity: 0, scale: 1.05 }}
                     whileInView={{ opacity: theme === 'light' ? 0.05 : 0.03, scale: 1 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 1.2, ease: "easeOut" }}
-                    className={`text-[20vw] md:text-[18vw] lg:text-[16vw] font-black uppercase tracking-widest leading-none whitespace-nowrap transition-colors duration-700 ${theme === 'light' ? 'text-black' : 'text-white'
-                        }`}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                    className={`text-[20vw] md:text-[18vw] lg:text-[16vw] font-black uppercase tracking-widest leading-none whitespace-nowrap transform-gpu ${theme === 'light' ? 'text-black' : 'text-white'}`}
                 >
                     ABOUT ME
                 </motion.span>
             </div>
 
-            {/* GUESS WHAT */}
-            <div className="relative mb-10 p-6 sm:p-10 backdrop-blur-3xl">
-                <AnimatedBorder />
+            <div className="relative mb-10 p-6 sm:p-10 backdrop-blur-3xl transform-gpu overflow-hidden">
+                <motion.div
+                    animate={{ "--border-progress": [0, 100] } as any}
+                    transition={{ duration: 8, ease: "linear", repeat: Infinity }}
+                    className="absolute inset-0 pointer-events-none"
+                >
+                    <AnimatedBorder />
+                </motion.div>
                 <motion.h1
                     variants={containerVariants}
                     initial="hidden"
@@ -168,165 +266,36 @@ function Details() {
                     viewport={{ once: true }}
                     className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extralight font-mono tracking-tighter mb-6 overflow-hidden"
                 >
-                    {splitText("Guess What Recruiters")}
+                    {splitWords("Guess What Recruiters")}
                 </motion.h1>
 
-                <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2">
-                    {lines.map((line, index) => (
-                        <motion.div
-                            key={index}
-                            variants={containerVariants}
-                            initial="hidden"
-                            whileInView="visible"
-                            viewport={{ once: true }}
-                            className={`inline-block transition-all duration-700 font-mono overflow-hidden
-                                ${index === activeLineIndex
-                                    ? theme === 'light'
-                                        ? 'text-black opacity-100 scale-105 text-4xl sm:text-5xl md:text-6xl lg:text-7xl'
-                                        : 'text-white opacity-100 scale-105 text-4xl sm:text-5xl md:text-6xl lg:text-7xl'
-                                    : theme === 'light'
-                                        ? 'text-black/20 blur-[2px] text-4xl sm:text-5xl md:text-6xl lg:text-7xl'
-                                        : 'text-white/10 blur-[2px] text-4xl sm:text-5xl md:text-6xl lg:text-7xl'
-                                }`}
-                        >
-                            {splitText(line)}
-                        </motion.div>
-                    ))}
-                </div>
+                <DynamicTextLines theme={theme} />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
-                {/* GITHUB CONTRIBUTIONS */}
+                <GithubStats />
+
                 <motion.div
-                    ref={githubBoxRef}
-                    style={borderStyles}
-                    initial={{ opacity: 0, scale: 0.97 }}
+                    initial={{ opacity: 0, scale: 0.98 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-                    className="lg:col-span-2 relative p-6 sm:p-10 flex flex-col items-center justify-center backdrop-blur-3xl min-h-[300px]"
+                    transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+                    className="relative p-8 sm:p-10 backdrop-blur-3xl flex flex-col justify-center group overflow-hidden transform-gpu"
                 >
-                    <AnimatedBorder />
-
-                    {/* GITHUB STATS GRID */}
-                    <div className="relative z-10 w-full mb-8">
-                        <div className="grid grid-cols-2  sm:grid-cols-3 lg:grid-cols-4 gap-4 text-center">
-                            <div className="relative flex flex-col items-center justify-center p-4 border border-white/10 hover:bg-white/5 transition-colors">
-                                <AnimatedBorder />
-                                <BiGitRepoForked className="w-5 h-5 sm:w-6 sm:h-6 mb-2 text-neutral-400" />
-                                <span className="text-xl sm:text-2xl font-mono font-light">{githubData.repos}</span>
-                                <span className="text-[10px] sm:text-xs tracking-widest text-neutral-500 uppercase mt-1">Repos</span>
-                            </div>
-                            <div className="relative flex flex-col items-center justify-center p-4 border border-white/10 hover:bg-white/5 transition-colors">
-                                <AnimatedBorder />
-                                <LuUsers className="w-5 h-5 sm:w-6 sm:h-6 mb-2 text-neutral-400" />
-                                <span className="text-xl sm:text-2xl font-mono font-light">{githubData.followers}</span>
-                                <span className="text-[10px] sm:text-xs tracking-widest text-neutral-500 uppercase mt-1">Followers</span>
-                            </div>
-                            <div className="relative flex flex-col items-center justify-center p-4 border border-white/10 hover:bg-white/5 transition-colors">
-                                <AnimatedBorder />
-                                <FiUserPlus className="w-5 h-5 sm:w-6 sm:h-6 mb-2 text-neutral-400" />
-                                <span className="text-xl sm:text-2xl font-mono font-light">{githubData.following}</span>
-                                <span className="text-[10px] sm:text-xs tracking-widest text-neutral-500 uppercase mt-1">Following</span>
-                            </div>
-                            <div className="relative flex flex-col items-center justify-center p-4 border border-white/10 hover:bg-white/5 transition-colors">
-                                <AnimatedBorder />
-                                <Star className="w-5 h-5 sm:w-6 sm:h-6 mb-2 text-neutral-400" />
-                                <span className="text-xl sm:text-2xl font-mono font-light">{githubData.stars}</span>
-                                <span className="text-[10px] sm:text-xs tracking-widest text-neutral-500 uppercase mt-1">Stars</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <a
-                        href="https://github.com/SahilSharma1212"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="relative z-10 w-full flex justify-center"
+                    <motion.div
+                        animate={{ "--border-progress": [0, 100] } as any}
+                        transition={{ duration: 6, ease: "linear", repeat: Infinity, delay: 3 }}
+                        className="absolute inset-0 pointer-events-none"
                     >
-                        <img
-                            src="https://ghchart.rshah.org/0d1117/SahilSharma1212"
-                            alt="GitHub Contributions"
-                            className="w-full opacity-80 hover:opacity-100 transition-opacity duration-500 max-w-4xl"
-                        />
-                    </a>
+                        <AnimatedBorder />
+                    </motion.div>
 
-                    {/* LINKS */}
-                    <div className="flex items-center justify-center gap-4 sm:gap-6 mt-8 relative z-10 w-full flex-wrap">
-                        <a
-                            href="https://github.com/SahilSharma1212"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={`relative flex items-center justify-center p-3 sm:p-4 border transition-all duration-300 group cursor-pointer ${theme === 'light' ? 'border-black/10 hover:bg-black/5' : 'border-white/10 hover:bg-white/5'
-                                }`}
-                        >
-                            <AnimatedBorder />
-                            <IoLogoGithub className={`w-6 h-6 sm:w-7 sm:h-7 transition-all duration-300 ${theme === 'light' ? 'text-neutral-600 group-hover:text-black group-hover:scale-110' : 'text-neutral-400 group-hover:text-white group-hover:scale-110'
-                                }`} />
-                        </a>
-
-                        <a
-                            href="mailto:sahilbhaisharma1212@gmail.com"
-                            className={`relative flex items-center justify-center p-3 sm:p-4 border transition-all duration-300 group cursor-pointer ${theme === 'light' ? 'border-black/10 hover:bg-black/5' : 'border-white/10 hover:bg-white/5'
-                                }`}
-                        >
-                            <AnimatedBorder />
-                            <IoMdMail className={`w-6 h-6 sm:w-7 sm:h-7 transition-all duration-300 ${theme === 'light' ? 'text-neutral-600 group-hover:text-black group-hover:scale-110' : 'text-neutral-400 group-hover:text-white group-hover:scale-110'
-                                }`} />
-                        </a>
-
-                        <a
-                            href="https://www.linkedin.com/in/sahil-sharma-822a752a9/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={`relative flex items-center justify-center p-3 sm:p-4 border transition-all duration-300 group cursor-pointer ${theme === 'light' ? 'border-black/10 hover:bg-black/5' : 'border-white/10 hover:bg-white/5'
-                                }`}
-                        >
-                            <AnimatedBorder />
-                            <IoLogoLinkedin className={`w-6 h-6 sm:w-7 sm:h-7 transition-all duration-300 ${theme === 'light' ? 'text-neutral-600 group-hover:text-black group-hover:scale-110' : 'text-neutral-400 group-hover:text-white group-hover:scale-110'
-                                }`} />
-                        </a>
-
-                        <div
-                            onClick={handleDownloadResume}
-                            className={`relative flex items-center justify-center p-3 sm:p-4 border transition-all duration-300 group cursor-pointer ${theme === 'light' ? 'border-black/10 hover:bg-black/5' : 'border-white/10 hover:bg-white/5'
-                                }`}
-                        >
-                            <AnimatedBorder />
-                            <IoDocumentTextSharp className={`w-6 h-6 sm:w-7 sm:h-7 transition-all duration-300 ${theme === 'light' ? 'text-neutral-600 group-hover:text-black group-hover:scale-110' : 'text-neutral-400 group-hover:text-white group-hover:scale-110'
-                                }`} />
-                        </div>
-
-                        <a
-                            href="tel:+918821809999"
-                            className={`relative flex items-center justify-center p-3 sm:p-4 border transition-all duration-300 group cursor-pointer ${theme === 'light' ? 'border-black/10 hover:bg-black/5' : 'border-white/10 hover:bg-white/5'
-                                }`}
-                        >
-                            <AnimatedBorder />
-                            <IoCallSharp className={`w-6 h-6 sm:w-7 sm:h-7 transition-all duration-300 ${theme === 'light' ? 'text-neutral-600 group-hover:text-black group-hover:scale-110' : 'text-neutral-400 group-hover:text-white group-hover:scale-110'
-                                }`} />
-                        </a>
-                    </div>
-                </motion.div>
-
-                {/* ABOUT ME */}
-                <motion.div
-                    ref={aboutMeBoxRef}
-                    style={borderStyles}
-                    initial={{ opacity: 0, scale: 0.97 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-                    className="relative p-8 sm:p-10 backdrop-blur-3xl flex flex-col justify-center group overflow-hidden"
-                >
-                    <AnimatedBorder />
-
-                    {/* Hover Image Background */}
-                    <div className="absolute inset-0 z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
+                    <div className="absolute inset-0 z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none transform-gpu">
                         <img
                             src="/linkedinimage.jpg"
                             alt="Sahil Sharma"
-                            className="w-full h-full object-cover object-center opacity-40 mix-blend-luminosity group-hover:scale-105 transition-transform duration-1000"
+                            loading="lazy"
+                            className="w-full h-full object-cover object-center opacity-40 mix-blend-luminosity group-hover:scale-105 transition-transform duration-1000 transform-gpu"
                         />
                         <div className="absolute inset-0 bg-linear-to-t from-[#090909] via-[#090909]/80 to-transparent" />
                     </div>
@@ -339,7 +308,7 @@ function Details() {
                             viewport={{ once: true }}
                             className={`text-xl sm:text-2xl font-mono ${theme === 'light' ? 'text-black/80 group-hover:text-black' : 'text-white/80 group-hover:text-white'} mb-6 tracking-widest uppercase transition-colors duration-500 overflow-hidden`}
                         >
-                            {splitText("About Me")}
+                            {splitWords("About Me")}
                         </motion.h2>
 
                         <p className="text-neutral-400 group-hover:text-neutral-200 text-base sm:text-lg leading-relaxed font-light transition-colors duration-500">
@@ -355,10 +324,14 @@ function Details() {
                 </motion.div>
             </div>
 
-
-            {/* ACADEMICS */}
-            <div className="relative my-10 p-6 sm:p-10 backdrop-blur-3xl">
-                <AnimatedBorder />
+            <div className="relative my-10 p-6 sm:p-10 backdrop-blur-3xl transform-gpu overflow-hidden">
+                <motion.div
+                    animate={{ "--border-progress": [0, 100] } as any}
+                    transition={{ duration: 10, ease: "linear", repeat: Infinity }}
+                    className="absolute inset-0 pointer-events-none"
+                >
+                    <AnimatedBorder />
+                </motion.div>
                 <motion.h1
                     variants={containerVariants}
                     initial="hidden"
@@ -366,71 +339,42 @@ function Details() {
                     viewport={{ once: true }}
                     className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extralight font-mono tracking-tighter mb-6 overflow-hidden"
                 >
-                    {splitText("Academics")}
+                    {splitWords("Academics")}
                 </motion.h1>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {/* 10th */}
-                    <div className="relative h-20 overflow-hidden flex flex-col group border border-white/5 hover:border-white/20 transition-colors">
-                        <AnimatedBorder />
-                        <motion.div
-                            className="flex flex-col flex-1"
-                            whileHover={{ y: "-50%" }}
-                            transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
-                        >
-                            {/* Main View */}
-                            <div className="h-20 flex items-center justify-center gap-4">
-                                <span className="text-2xl font-extralight font-mono">10th</span>
-                                <span className="text-neutral-400 text-lg font-mono">96.2%</span>
-                            </div>
-                            {/* Detail View */}
-                            <div className="h-20 flex flex-col items-center justify-center bg-white/5 font-mono">
-                                <span className="text-sm text-neutral-300">Delhi Public School</span>
-                                <span className="text-[10px] text-neutral-500 uppercase tracking-widest mt-1">DPS Bhilai | 2020</span>
-                            </div>
-                        </motion.div>
-                    </div>
-
-                    {/* 12th */}
-                    <div className="relative h-20 overflow-hidden flex flex-col group border border-white/5 hover:border-white/20 transition-colors">
-                        <AnimatedBorder />
-                        <motion.div
-                            className="flex flex-col flex-1"
-                            whileHover={{ y: "-50%" }}
-                            transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
-                        >
-                            <div className="h-20 flex items-center justify-center gap-4">
-                                <span className="text-2xl font-extralight font-mono">12th</span>
-                                <span className="text-neutral-400 text-lg font-mono">94.2%</span>
-                            </div>
-                            <div className="h-20 flex flex-col items-center justify-center bg-white/5 font-mono">
-                                <span className="text-sm text-neutral-300">Delhi Public School</span>
-                                <span className="text-[10px] text-neutral-500 uppercase tracking-widest mt-1">DPS Bhilai | 2022</span>
-                            </div>
-                        </motion.div>
-                    </div>
-
-                    {/* B.Tech */}
-                    <div className="relative h-20 overflow-hidden flex flex-col group border border-white/5 hover:border-white/20 transition-colors sm:col-span-2 lg:col-span-1">
-                        <AnimatedBorder />
-                        <motion.div
-                            className="flex flex-col flex-1"
-                            whileHover={{ y: "-50%" }}
-                            transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
-                        >
-                            <div className="h-20 flex items-center justify-center gap-4">
-                                <span className="text-2xl font-extralight font-mono">B.Tech</span>
-                                <span className="text-neutral-400 text-lg font-mono">8.5 CGPA</span>
-                            </div>
-                            <div className="h-20 flex flex-col items-center justify-center bg-white/5 font-mono">
-                                <span className="text-sm text-neutral-300">Computer Science</span>
-                                <span className="text-[10px] text-neutral-500 uppercase tracking-widest mt-1">BIT Durg | 2026</span>
-                            </div>
-                        </motion.div>
-                    </div>
+                    {[
+                        { title: "10th", value: "96.2%", school: "Delhi Public School", detail: "DPS Bhilai | 2020" },
+                        { title: "12th", value: "94.2%", school: "Delhi Public School", detail: "DPS Bhilai | 2022" },
+                        { title: "B.Tech", value: "8.5 CGPA", school: "Computer Science", detail: "BIT Durg | 2026", span: "sm:col-span-2 lg:col-span-1" },
+                    ].map((item, i) => (
+                        <div key={i} className={`relative h-20 overflow-hidden flex flex-col group border border-white/5 hover:border-white/20 transition-colors transform-gpu ${item.span || ""}`}>
+                            <motion.div
+                                animate={{ "--border-progress": [0, 100] } as any}
+                                transition={{ duration: 4, ease: "linear", repeat: Infinity, delay: i * 0.5 }}
+                                className="absolute inset-0 pointer-events-none"
+                            >
+                                <AnimatedBorder />
+                            </motion.div>
+                            <motion.div
+                                className="flex flex-col flex-1 transform-gpu"
+                                whileHover={{ y: "-50%" }}
+                                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                            >
+                                <div className="h-20 flex items-center justify-center gap-4 shrink-0">
+                                    <span className="text-2xl font-extralight font-mono">{item.title}</span>
+                                    <span className="text-neutral-400 text-lg font-mono">{item.value}</span>
+                                </div>
+                                <div className="h-20 flex flex-col items-center justify-center bg-white/5 font-mono shrink-0">
+                                    <span className="text-sm text-neutral-300">{item.school}</span>
+                                    <span className="text-[10px] text-neutral-500 uppercase tracking-widest mt-1">{item.detail}</span>
+                                </div>
+                            </motion.div>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>
     );
 }
 
-export default memo(Details)
+export default memo(Details)
