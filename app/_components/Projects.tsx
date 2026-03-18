@@ -102,16 +102,6 @@ const ProjectCard = memo(({ project, index, activeIndex, theme, onClick }: any) 
                     : 'bg-linear-to-t from-[#090909] via-[#090909]/60 sm:via-[#090909]/20 to-transparent'
                     }`} />
 
-                {isFront && (
-                    <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-8 md:p-12 flex items-end justify-between z-20">
-                        <div className={`shrink-0 flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 border transition-all shadow-none ${theme === 'light'
-                            ? 'border-black/20 bg-black/5 text-black hover:bg-black hover:text-white'
-                            : 'border-white/20 bg-white/5 text-white hover:bg-white hover:text-black'
-                            }`}>
-                            <span className="font-mono text-xl sm:text-3xl">+</span>
-                        </div>
-                    </div>
-                )}
             </div>
         </motion.div>
     );
@@ -248,7 +238,7 @@ export default function Projects() {
                             initial={{ scale: 0.95, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.95, opacity: 0 }}
-                            className={`relative w-full max-w-6xl h-[90vh] overflow-hidden flex flex-col md:flex-row transition-colors duration-500 transform-gpu ${theme === 'light' ? 'bg-white text-black' : 'bg-[#0f0f0f] text-white'}`}
+                            className={`relative w-full max-w-6xl h-[90vh] overflow-hidden transition-colors duration-500 transform-gpu ${theme === 'light' ? 'bg-white text-black' : 'bg-[#0f0f0f] text-white'}`}
                             onClick={(e) => e.stopPropagation()}
                         >
                             <button
@@ -261,73 +251,75 @@ export default function Projects() {
                                 <FaTimes size={20} />
                             </button>
 
-                            <div className="w-full md:w-1/2 h-full border-r border-white/10 relative overflow-y-auto bg-[#111] custom-scrollbar transform-gpu">
-                                <div className="flex flex-col gap-2 p-2 pt-16 md:pt-2">
-                                    {activeProject.images.map((img: string, idx: number) => (
-                                        <div key={idx} className="relative aspect-video w-full overflow-hidden border border-white/5 bg-black transform-gpu">
-                                            <img
-                                                src={img}
-                                                alt={`${activeProject.title} screenshot ${idx + 1}`}
-                                                loading="lazy"
-                                                className="w-full h-full object-cover opacity-80 transform-gpu"
-                                                onError={(e: any) => {
-                                                    e.target.src = `https://placehold.co/1200x800/101010/303030?text=${encodeURIComponent(activeProject.title)}+${idx + 1}`;
-                                                }}
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="sticky bottom-0 left-0 right-0 h-20 bg-linear-to-t from-[#0c0c0c] to-transparent pointer-events-none z-10" />
-                            </div>
-
-                            <div className="w-full md:w-1/2 p-6 md:p-10 lg:p-12 overflow-y-auto custom-scrollbar transform-gpu">
-                                <span className="text-xs sm:text-sm tracking-widest text-neutral-500 uppercase font-mono block mb-2">
-                                    {activeProject.category}
-                                </span>
-                                <h1 className="text-3xl sm:text-4xl md:text-5xl font-mono mb-6 leading-tight">
-                                    {activeProject.title}
-                                </h1>
-
-                                <div className="flex gap-4 mb-8">
-                                    {activeProject.github && (
-                                        <a href={activeProject.github} target="_blank" rel="noopener noreferrer" className={`flex-1 flex items-center justify-center gap-2 py-4 border transition-all duration-300 ${theme === 'light' ? 'bg-black text-white border-black hover:bg-white hover:text-black' : 'bg-white text-black border-white hover:bg-black hover:text-white'}`}>
-                                            <FaGithub /> GitHub
-                                        </a>
-                                    )}
-                                    {activeProject.live && (
-                                        <a href={activeProject.live} target="_blank" rel="noopener noreferrer" className={`flex-1 flex items-center justify-center gap-2 py-4 border transition-all duration-300 ${theme === 'light' ? 'border-black/20 text-black hover:bg-black/5' : 'border-white/20 text-white hover:bg-white/5'}`}>
-                                            <FaExternalLinkAlt /> Live Demo
-                                        </a>
-                                    )}
-                                </div>
-
-                                <section className="mb-8">
-                                    <h3 className="text-sm tracking-widest uppercase font-mono mb-4 border-b border-white/10 pb-2">Overview</h3>
-                                    <p className="text-neutral-400 text-sm md:text-base leading-relaxed font-light">{activeProject.desc}</p>
-                                </section>
-
-                                <section className="mb-8">
-                                    <h3 className="text-sm tracking-widest uppercase font-mono mb-4 border-b border-white/10 pb-2">Key Features</h3>
-                                    <ul className="space-y-3">
-                                        {activeProject.features.map((feature: string, idx: number) => (
-                                            <li key={idx} className="flex items-start gap-3 text-neutral-300 text-sm">
-                                                <span className="w-1.5 h-1.5 mt-2 rounded-full bg-white/50 shrink-0" />
-                                                <span className="leading-relaxed">{feature}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </section>
-
-                                <section>
-                                    <h3 className="text-sm tracking-widest uppercase font-mono mb-4 border-b border-white/10 pb-2">Stack</h3>
-                                    <div className="flex flex-wrap gap-2">
-                                        {activeProject.techStack.map((tech: string, idx: number) => (
-                                            <span key={idx} className="px-3 py-1 bg-white/5 border border-white/10 text-[10px] text-neutral-300 uppercase tracking-widest font-mono">
-                                                {tech}
-                                            </span>
+                            <div className="w-full h-full overflow-y-auto md:overflow-hidden flex flex-col-reverse md:flex-row custom-scrollbar">
+                                <div className="w-full md:w-1/2 h-auto md:h-full border-t md:border-t-0 md:border-r border-white/10 relative md:overflow-y-auto bg-[#111] custom-scrollbar transform-gpu">
+                                    <div className="flex flex-col gap-2 p-2 pt-16 md:pt-2">
+                                        {activeProject.images.map((img: string, idx: number) => (
+                                            <div key={idx} className="relative aspect-video w-full overflow-hidden border border-white/5 bg-black transform-gpu">
+                                                <img
+                                                    src={img}
+                                                    alt={`${activeProject.title} screenshot ${idx + 1}`}
+                                                    loading="lazy"
+                                                    className="w-full h-full object-cover opacity-80 transform-gpu"
+                                                    onError={(e: any) => {
+                                                        e.target.src = `https://placehold.co/1200x800/101010/303030?text=${encodeURIComponent(activeProject.title)}+${idx + 1}`;
+                                                    }}
+                                                />
+                                            </div>
                                         ))}
                                     </div>
-                                </section>
+                                    <div className="sticky bottom-0 left-0 right-0 h-20 bg-linear-to-t from-[#0c0c0c] to-transparent pointer-events-none z-10" />
+                                </div>
+
+                                <div className="w-full md:w-1/2 p-6 md:p-10 lg:p-12 h-auto md:h-full md:overflow-y-auto custom-scrollbar transform-gpu">
+                                    <span className="text-xs sm:text-sm tracking-widest text-neutral-500 uppercase font-mono block mb-2">
+                                        {activeProject.category}
+                                    </span>
+                                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-mono mb-6 leading-tight">
+                                        {activeProject.title}
+                                    </h1>
+
+                                    <div className="flex gap-4 mb-8">
+                                        {activeProject.github && (
+                                            <a href={activeProject.github} target="_blank" rel="noopener noreferrer" className={`flex-1 flex items-center justify-center gap-2 py-4 border transition-all duration-300 ${theme === 'light' ? 'bg-black text-white border-black hover:bg-white hover:text-black' : 'bg-white text-black border-white hover:bg-black hover:text-white'}`}>
+                                                <FaGithub /> GitHub
+                                            </a>
+                                        )}
+                                        {activeProject.live && (
+                                            <a href={activeProject.live} target="_blank" rel="noopener noreferrer" className={`flex-1 flex items-center justify-center gap-2 py-4 border transition-all duration-300 ${theme === 'light' ? 'border-black/20 text-black hover:bg-black/5' : 'border-white/20 text-white hover:bg-white/5'}`}>
+                                                <FaExternalLinkAlt /> Live Demo
+                                            </a>
+                                        )}
+                                    </div>
+
+                                    <section className="mb-8">
+                                        <h3 className="text-sm tracking-widest uppercase font-mono mb-4 border-b border-white/10 pb-2">Overview</h3>
+                                        <p className="text-neutral-400 text-sm md:text-base leading-relaxed font-light">{activeProject.desc}</p>
+                                    </section>
+
+                                    <section className="mb-8">
+                                        <h3 className="text-sm tracking-widest uppercase font-mono mb-4 border-b border-white/10 pb-2">Key Features</h3>
+                                        <ul className="space-y-3">
+                                            {activeProject.features.map((feature: string, idx: number) => (
+                                                <li key={idx} className="flex items-start gap-3 text-neutral-300 text-sm">
+                                                    <span className="w-1.5 h-1.5 mt-2 rounded-full bg-white/50 shrink-0" />
+                                                    <span className="leading-relaxed">{feature}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </section>
+
+                                    <section>
+                                        <h3 className="text-sm tracking-widest uppercase font-mono mb-4 border-b border-white/10 pb-2">Stack</h3>
+                                        <div className="flex flex-wrap gap-2">
+                                            {activeProject.techStack.map((tech: string, idx: number) => (
+                                                <span key={idx} className="px-3 py-1 bg-white/5 border border-white/10 text-[10px] text-neutral-300 uppercase tracking-widest font-mono">
+                                                    {tech}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </section>
+                                </div>
                             </div>
                         </motion.div>
                     </motion.div>
