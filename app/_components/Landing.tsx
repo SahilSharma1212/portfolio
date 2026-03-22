@@ -1,9 +1,13 @@
 "use client";
 
-import { memo, useMemo } from "react";
+import { memo, useMemo, useRef, useLayoutEffect } from "react";
 import { motion, Variants } from "framer-motion";
 import { useThemeStore } from '@/store/themeStore';
 import AnimatedBorder from './AnimatedBorder';
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -75,9 +79,60 @@ TicTacToeGrid.displayName = "TicTacToeGrid";
 
 function Landing() {
     const { theme } = useThemeStore();
+    const sahilRef = useRef<HTMLDivElement>(null);
+    const sharmaRef = useRef<HTMLDivElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    useLayoutEffect(() => {
+        const ctx = gsap.context(() => {
+            if (sahilRef.current && sharmaRef.current) {
+                // Entry animation
+                gsap.from(sahilRef.current, {
+                    opacity: 0,
+                    scale: 0.95,
+                    duration: 0.8,
+                    delay: 0.2,
+                    ease: "power2.out"
+                });
+
+                gsap.from(sharmaRef.current, {
+                    opacity: 0,
+                    scale: 0.95,
+                    duration: 0.8,
+                    delay: 0.5,
+                    ease: "power2.out"
+                });
+
+                // Scroll animation
+                gsap.to(sahilRef.current, {
+                    xPercent: -40,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: containerRef.current,
+                        start: "top top",
+                        end: "bottom top",
+                        scrub: 1.5,
+                    }
+                });
+
+                gsap.to(sharmaRef.current, {
+                    xPercent: 40,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: containerRef.current,
+                        start: "top top",
+                        end: "bottom top",
+                        scrub: 1.5,
+                    }
+                });
+            }
+        }, containerRef);
+
+        return () => ctx.revert();
+    }, []);
 
     return (
-        <div id="home" className={`min-h-screen w-screen flex items-center justify-center transition-all duration-700 ${theme === 'light'
+        <div id="home" ref={containerRef} className={`min-h-screen w-screen flex items-center justify-center transition-all duration-700 ${theme === 'light'
             ? 'bg-linear-to-br from-white to-neutral-50 text-neutral-900'
             : 'bg-linear-to-br from-[#070707] to-[#030303] via-[#090909] text-white'
             } overflow-hidden p-4 sm:p-6 md:p-8 relative`}>
@@ -107,10 +162,8 @@ function Landing() {
             <div className="w-full max-w-5xl relative z-10 transform-gpu">
                 <div className="flex flex-col items-center justify-center gap-8 sm:gap-10 md:gap-12 lg:gap-4">
                     {/* SAHIL BOX */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+                    <div
+                        ref={sahilRef}
                         className="relative px-6 py-4 sm:px-10 sm:py-5 md:px-14 md:py-7 -translate-x-1/4 md:-translate-x-1/3 backdrop-blur-3xl transform-gpu"
                     >
                         <motion.div
@@ -149,13 +202,11 @@ function Landing() {
                         >
                             {splitWords("Sahil")}
                         </motion.h1>
-                    </motion.div>
+                    </div>
 
                     {/* SHARMA BOX */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.6, ease: "easeOut", delay: 0.5 }}
+                    <div
+                        ref={sharmaRef}
                         className="relative px-6 py-4 sm:px-10 sm:py-5 md:px-14 md:py-7 translate-x-1/4 md:translate-x-1/3 backdrop-blur-3xl transform-gpu"
                     >
                         <motion.div
@@ -194,11 +245,11 @@ function Landing() {
                         >
                             {splitWords("Sharma")}
                         </motion.p>
-                    </motion.div>
+                    </div>
                 </div>
             </div>
         </div>
     );
 }
 
-export default memo(Landing);
+export default memo(Landing);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, memo, useMemo } from "react";
+import { useRef, memo, useMemo } from "react";
 import { motion, Variants } from "framer-motion";
 import AnimatedBorder from "./AnimatedBorder";
 import { useThemeStore } from '@/store/themeStore';
@@ -62,14 +62,13 @@ const wordVariants: Variants = {
 };
 
 const childVariants: Variants = {
-    hidden: { y: 20, opacity: 0, scale: 0.98 },
+    hidden: { y: 20, opacity: 0 },
     visible: {
         y: 0,
         opacity: 1,
-        scale: 1,
         transition: {
-            duration: 0.6,
-            ease: [0.22, 1, 0.36, 1],
+            duration: 0.5,
+            ease: "easeOut",
         }
     }
 };
@@ -89,19 +88,12 @@ const splitWords = (text: string) =>
 const SkillBadge = memo(({ skill, theme }: { skill: any, theme: string }) => (
     <motion.div
         variants={childVariants}
-        className={`relative px-3 py-1.5 sm:px-5 sm:py-2 border transition-all duration-300 group hover:scale-105 transform-gpu ${theme === 'light' ? 'border-black/10 hover:border-black/30' : 'border-white/10 hover:border-white/30'
-            } backdrop-blur-3xl pointer-events-auto overflow-hidden`}
+        className={`relative px-3 py-1.5 sm:px-5 sm:py-2 border transition-all duration-400 group hover:scale-105 transform-gpu ${theme === 'light' ? 'border-black/8 hover:border-black/20 bg-white shadow-sm' : 'border-white/8 hover:border-white/20 bg-[#222]'
+            } pointer-events-auto overflow-hidden rounded-xs`}
     >
-        <motion.div
-            animate={{ "--border-progress": [0, 100] } as any}
-            transition={{ duration: 4, ease: "linear", repeat: Infinity }}
-            className="absolute inset-0 pointer-events-none"
-        >
-            <AnimatedBorder />
-        </motion.div>
         <div className="flex items-center gap-2 relative z-10">
-            {skill.icon && <skill.icon className="w-4 h-4 sm:w-5 sm:h-5 text-neutral-400 group-hover:text-white transition-colors duration-300" />}
-            <span className={`text-[10px] sm:text-xs tracking-[0.2em] font-mono uppercase transition-colors duration-300 ${theme === 'light' ? 'text-neutral-800 group-hover:text-black' : 'text-neutral-400 group-hover:text-white'
+            {skill.icon && <skill.icon className={`w-4 h-4 sm:w-5 sm:h-5 transition-colors duration-400 ${theme === 'light' ? 'text-neutral-500 group-hover:text-black' : 'text-neutral-400 group-hover:text-white'}`} />}
+            <span className={`text-[10px] sm:text-xs tracking-[0.2em] font-mono uppercase transition-colors duration-400 ${theme === 'light' ? 'text-neutral-600 group-hover:text-black' : 'text-neutral-300 group-hover:text-white'
                 }`}>
                 {skill.name}
             </span>
@@ -119,20 +111,20 @@ const CategoryCard = memo(({ cat, theme, index }: { cat: any, theme: string, ind
             variants={childVariants}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true }}
-            className={`relative p-6 sm:p-8 backdrop-blur-3xl flex flex-col group overflow-hidden transform-gpu ${cat.span}`}
+            viewport={{ once: true, margin: "-50px" }}
+            className={`relative p-6 sm:p-8 flex flex-col group overflow-hidden transform-gpu rounded-xs ${cat.span} ${theme === 'light' ? 'bg-white/80 border-black/5' : 'bg-[#0f0f0f] border-white/5'} border`}
         >
             <motion.div
                 animate={{ "--border-progress": [0, 100] } as any}
-                transition={{ duration: 6, ease: "linear", repeat: Infinity, delay: index * 0.2 }}
+                transition={{ duration: 10, ease: "linear", repeat: Infinity, delay: index * 0.5 }}
                 className="absolute inset-0 pointer-events-none"
             >
                 <AnimatedBorder />
             </motion.div>
 
             <div className="flex items-center gap-4 mb-6 sm:mb-8 relative z-10">
-                <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center transition-colors duration-300 ${theme === 'light' ? 'bg-black/5 border-black/10' : 'bg-white/5 border-white/10'
-                    } border backdrop-blur-3xl`}>
+                <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xs flex items-center justify-center transition-colors duration-300 ${theme === 'light' ? 'bg-neutral-900/5 border-black/10' : 'bg-white/5 border-white/10'
+                    } border`}>
                     {Icon && <Icon className={`w-6 h-6 sm:w-7 sm:h-7 transition-colors duration-300 ${theme === 'light' ? 'text-black' : 'text-white'}`} />}
                 </div>
                 <h2 className={`text-xl sm:text-2xl font-mono uppercase tracking-widest transition-colors duration-300 ${theme === 'light' ? 'text-black' : 'text-white'}`}>
