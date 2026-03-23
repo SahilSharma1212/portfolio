@@ -49,15 +49,40 @@ const charVariants: Variants = {
     }
 };
 
-const splitWords = (text: string) =>
+const RevealText = ({ text, delay = 0, className = "" }: { text: string; delay?: number; className?: string }) => {
+    return (
+        <div className={`relative overflow-hidden inline-block ${className}`}>
+            <motion.span
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: delay + 0.4, duration: 0.1 }}
+            >
+                {text}
+            </motion.span>
+            <motion.div
+                initial={{ left: 0, width: "0%" }}
+                whileInView={{
+                    left: ["0%", "0%", "100%"],
+                    width: ["0%", "100%", "0%"],
+                }}
+                viewport={{ once: true }}
+                transition={{
+                    delay: delay,
+                    duration: 0.8,
+                    times: [0, 0.5, 1],
+                    ease: [0.22, 1, 0.36, 1],
+                }}
+                className="absolute top-0 bottom-0 bg-neutral-500/20 z-20"
+            />
+        </div>
+    );
+};
+
+const splitWords = (text: string, baseDelay = 0) =>
     text.split(" ").map((word, i) => (
         <span key={i} className="inline-block whitespace-nowrap mr-[0.2em]">
-            <motion.span
-                variants={wordVariants}
-                className="inline-block"
-            >
-                {word}
-            </motion.span>
+            <RevealText text={word} delay={baseDelay + i * 0.1} />
         </span>
     ));
 
@@ -188,45 +213,38 @@ const GithubStats = memo(() => {
 
 GithubStats.displayName = "GithubStats";
 
-const DynamicTextLines = memo(({ theme }: { theme: string }) => {
-    const [activeLineIndex, setActiveLineIndex] = useState(0);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setActiveLineIndex((prevIndex) => (prevIndex + 1) % lines.length);
-        }, 2000);
-        return () => clearInterval(interval);
-    }, []);
-
+const StaticTextLines = memo(({ theme }: { theme: string }) => {
+    const lines = ['i code, ', 'i learn, ', 'i build'];
     return (
         <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2">
-            {lines.map((line, index) => {
-                const isActive = index === activeLineIndex;
-                return (
-                    <motion.div
-                        key={index}
-                        initial={{ opacity: 0 }}
-                        animate={{
-                            opacity: isActive ? 1 : 0.2,
-                            scale: isActive ? 1.05 : 1,
-                            filter: isActive ? "blur(0px)" : "blur(2px)"
-                        }}
-                        transition={{ duration: 0.5 }}
-                        className={`inline-block font-mono overflow-hidden text-4xl sm:text-5xl md:text-6xl lg:text-7xl ${theme === 'light' ? 'text-black' : 'text-white'
-                            }`}
-                    >
-                        {line}
-                    </motion.div>
-                );
-            })}
+            {lines.map((line, index) => (
+                <div
+                    key={index}
+                    className={`inline-block font-mono text-4xl sm:text-5xl md:text-6xl lg:text-7xl ${theme === 'light' ? 'text-black' : 'text-white'}`}
+                >
+                    <RevealText text={line} delay={0.6 + index * 0.2} />
+                </div>
+            ))}
         </div>
     );
 });
 
-DynamicTextLines.displayName = "DynamicTextLines";
+StaticTextLines.displayName = "StaticTextLines";
 
 function Details() {
     const { theme } = useThemeStore();
+    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+    const [isHovered, setIsHovered] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        if (!containerRef.current) return;
+        const rect = containerRef.current.getBoundingClientRect();
+        setMousePos({
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top,
+        });
+    };
 
     return (
         <div id="about" className={`min-h-screen w-screen transition-colors duration-700 ${theme === 'light'
@@ -265,16 +283,20 @@ function Details() {
                     viewport={{ once: true }}
                     className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-extralight font-mono tracking-tighter mb-6 overflow-hidden"
                 >
-                    {splitWords("Guess What Recruiters")}
+                    {splitWords("Guess What Recruiters", 0.1)}
                 </motion.h1>
 
-                <DynamicTextLines theme={theme} />
+                <StaticTextLines theme={theme} />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
                 <GithubStats />
 
                 <motion.div
+                    ref={containerRef}
+                    onMouseMove={handleMouseMove}
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)}
                     initial={{ opacity: 0, scale: 0.98 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
@@ -289,14 +311,20 @@ function Details() {
                         <AnimatedBorder />
                     </motion.div>
 
-                    <div className="absolute inset-0 z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none transform-gpu">
+                    <div
+                        className="absolute inset-0 z-0 pointer-events-none transform-gpu overflow-hidden"
+                        style={{
+                            clipPath: `circle(${isHovered ? 120 : 0}px at ${mousePos.x}px ${mousePos.y}px)`,
+                            transition: 'clip-path 0.4s cubic-bezier(0.22, 1, 0.36, 1)'
+                        }}
+                    >
                         <img
                             src="/linkedinimage.jpg"
                             alt="Sahil Sharma"
                             loading="lazy"
-                            className="w-full h-full object-cover object-center opacity-40 mix-blend-luminosity group-hover:scale-105 transition-transform duration-1000 transform-gpu"
+                            className="w-full h-full object-cover object-center transform-gpu"
                         />
-                        <div className="absolute inset-0 bg-linear-to-t from-[#090909] via-[#090909]/80 to-transparent" />
+                        <div className="absolute inset-0 bg-linear-to-t from-[#090909] via-[#090909]/40 to-transparent" />
                     </div>
 
                     <div className="relative z-10">
@@ -305,9 +333,9 @@ function Details() {
                             initial="hidden"
                             whileInView="visible"
                             viewport={{ once: true }}
-                            className={`text-xl sm:text-2xl font-mono ${theme === 'light' ? 'text-black/80 group-hover:text-black' : 'text-white/80 group-hover:text-white'} mb-6 tracking-widest uppercase transition-colors duration-500 overflow-hidden`}
+                            className={`text-xl sm:text-2xl font-mono ${theme === 'light' ? 'text-black/80' : 'text-white/80'} mb-6 tracking-widest uppercase transition-colors duration-500 overflow-hidden`}
                         >
-                            {splitWords("About Me")}
+                            About Me
                         </motion.h2>
 
                         <p className="text-neutral-400 group-hover:text-neutral-200 text-base sm:text-lg leading-relaxed font-light transition-colors duration-500">
@@ -323,6 +351,7 @@ function Details() {
                 </motion.div>
             </div>
 
+            {/* ACADEMICS */}
             <div className="relative my-10 p-6 sm:p-10 backdrop-blur-3xl transform-gpu overflow-hidden">
                 <motion.div
                     animate={{ "--border-progress": [0, 100] } as any}
@@ -338,7 +367,7 @@ function Details() {
                     viewport={{ once: true }}
                     className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extralight font-mono tracking-tighter mb-6 overflow-hidden"
                 >
-                    {splitWords("Academics")}
+                    Academics
                 </motion.h1>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {[
