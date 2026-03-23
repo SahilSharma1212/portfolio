@@ -56,21 +56,5 @@ export const projects = [
         techStack: ['Next.js', 'MongoDB', 'Tailwind', 'Gemini-API', 'JWT', 'ShadCn', 'Mailtrap'],
         github: 'https://github.com/SahilSharma1212/Next.js-AI-Powered-Resume-Builder',
         live: 'https://next-js-ai-powered-resume-builder.vercel.app/'
-    },
-    {
-        title: 'Drawing App',
-        category: 'Web App',
-        images: ['/drawing_app_1.png', '/drawing_app_2.png', '/drawing_app_3.png'],
-        desc: 'A feature-rich web-based drawing application designed for creative freedom. Users can draw with various brush sizes and colors, erase, undo/redo actions, and export their artwork as images. Fully responsive for mobile/tablet use.',
-        features: [
-            'Canvas-based Drawing',
-            'Undo/Redo Logic',
-            'Image Exporting',
-            'Responsive UI Design',
-            'Konva State Management',
-        ],
-        techStack: ['React', 'Canvas API', 'Tailwind', 'Konva', 'Framer-Motions'],
-        github: 'https://github.com/SahilSharma1212/drawing-app-using-Konva',
-        live: 'https://sahilsharma1212.github.io/drawing-app-using-Konva/'
-    },
+    }
 ];
