@@ -393,7 +393,7 @@ function Details() {
                                     <span className="text-neutral-400 text-lg font-mono">{item.value}</span>
                                 </div>
                                 <div className="h-20 flex flex-col items-center justify-center bg-white/5 font-mono shrink-0">
-                                    <span className="text-sm text-neutral-300">{item.school}</span>
+                                    <span className={"text-sm " + theme === 'light' ? 'text-neutral-300' : 'text-neutral-700'}>{item.school}</span>
                                     <span className="text-[10px] text-neutral-500 uppercase tracking-widest mt-1">{item.detail}</span>
                                 </div>
                             </motion.div>
