@@ -130,7 +130,7 @@ export default function Projects() {
     }, []);
 
     return (
-        <div id="projects" ref={triggerRef} className={`relative w-screen transition-colors duration-700 ${theme === 'light' ? 'bg-neutral-50' : 'bg-[#070707]'}`}>
+        <div id="projects" ref={triggerRef} className={`relative w-screen transition-colors duration-700 mb-10 ${theme === 'light' ? 'bg-neutral-50' : 'bg-[#070707]'}`}>
             <div ref={pinRef} className="flex flex-col lg:flex-row h-screen w-full max-w-7xl mx-auto p-4 sm:p-8 md:p-12 lg:p-20 overflow-hidden">
 
                 {/* Left Side: Sticky Titles (Desktop Only) */}
