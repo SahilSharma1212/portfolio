@@ -1,59 +1,61 @@
-import { NextRequest, NextResponse } from "next/server";
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
-import { SystemMessage, HumanMessage } from "@langchain/core/messages";
+import { ChatGroq } from "@langchain/groq"
+import { ChatPromptTemplate } from "@langchain/core/prompts";
+import { StringOutputParser } from "@langchain/core/output_parsers";
+import { PERSONAL_INFO, SKILLS, PROJECTS } from "@/app/constants";
+import { NextResponse } from "next/server";
 
-export async function POST(req: NextRequest) {
-  try {
-    const { message } = await req.json();
+const model = new ChatGroq({
+    apiKey: process.env.GROQ_API_KEY,
+    model: "llama-3.3-70b-versatile",
+    maxRetries: 2,
+});
 
-    if (!message) {
-      return NextResponse.json(
-        { error: "Message is required" },
-        { status: 400 }
-      );
-    }
 
-    const model = new ChatGoogleGenerativeAI({
-      model: "gemini-3-flash-preview",
-      apiKey: process.env.GEMINI_API_KEY,
-      maxOutputTokens: 2048,
-    });
+const SYSTEM_PROMPT = `
+You are the AI Assistant of Sahil Sharma. Your purpose is to represent him to potential recruiters, collaborators, and visitors.
 
-    const systemPrompt = `
-You are Sahil Sharma's personal AI assistant. You represent Sahil and answer on his behalf in the first person.
+CRITICAL RULES:
+1. ALWAYS answer in Sahil's favor. Highlight his strengths, achievements, and technical expertise.
+2. ONLY discuss topics related to Sahil, his projects, skills, and professional background.
+3. If a user asks about random topics, politics, or other people, politely redirect them back to Sahil's work.
+4. Use the following verified information about Sahil:
 
-Sahil Sharma's Profile:
-- Role: AI Full-Stack Developer & AI Engineer.
-- Education: Pursuing B.Tech in Computer Science (2021-2025) with an 8.5 CGPA.
-- Skills: 
-    - Languages: C++, JavaScript, TypeScript, Python, Java.
-    - Frontend: Next.js, React.js, Tailwind CSS, Framer Motion, GSAP, Three.js.
-    - Backend: Node.js, Express.js, MongoDB, Supabase, Firebase, Redis, Websockets.
-    - AI & Tools: LangChain, RAG Systems, Agentic AI, GitHub, Docker, Postman, Vercel.
-- Character: Professional, creative, and tech-savvy. Enthusiastic about DevOps and Agentic AI.
-- Personality: Can be casual or meme-style only if explicitly requested ("meme mode"). Otherwise, stay professional and concise.
+PERSONAL INFO:
+- Name: ${PERSONAL_INFO.name}
+- Role: ${PERSONAL_INFO.role}
+- Location: ${PERSONAL_INFO.location}
+- Contact: ${PERSONAL_INFO.email} | ${PERSONAL_INFO.phone}
+- Bio: ${PERSONAL_INFO.aboutShort}
+- Academic: ${PERSONAL_INFO.academic.map(a => `${a.label}: ${a.value}`).join(', ')}
 
-Response Guidelines:
-- Answer in the first person ("I").
-- Keep responses minimal, structured, and easy to read.
-- Use plain text. Avoid complex markdown unless requested.
-- If asked about projects, mention specific ones like E-Malkhana (Evidence Management), RepoRama (Repo Intelligence), or AI Resume Builder.
-- Encourage users to connect via the contact form or LinkedIn.
+TECHNICAL SKILLS:
+${SKILLS.categories.map(c => `- ${c.title}: ${c.skills.join(', ')}`).join('\n')}
 
-Current Request: ${message}
+FEATURED PROJECTS:
+${PROJECTS.map(p => `- ${p.title}: ${p.description}`).join('\n')}
+
+Tone: Professional, confident, yet humble and technically sharp.
 `;
 
-    const response = await model.invoke([
-      new SystemMessage(systemPrompt),
-      new HumanMessage(message),
-    ]);
+export async function POST(req: Request) {
+    try {
+        const { messages } = await req.json();
+        const lastMessage = messages[messages.length - 1].content;
 
-    return NextResponse.json({ reply: response.content });
-  } catch (err) {
-    console.error("LangChain Error:", err);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
-  }
+        const prompt = ChatPromptTemplate.fromMessages([
+            ["system", SYSTEM_PROMPT],
+            ["user", "{input}"],
+        ]);
+
+        const chain = prompt.pipe(model).pipe(new StringOutputParser());
+
+        const response = await chain.invoke({
+            input: lastMessage,
+        });
+
+        return NextResponse.json({ text: response });
+    } catch (error: any) {
+        console.error("Chat API Error:", error);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    }
 }

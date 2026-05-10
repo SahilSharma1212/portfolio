@@ -1,39 +1,36 @@
-# Sahil Sharma Portfolio Website
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-A modern **personal portfolio website** built with **Next.js**, **TailwindCSS**, **Framer Motion**, **React Hot Toast**, and **Resend API**. This project showcases a responsive **Contact Section** with email functionality and a **Footer Section** with social links and newsletter subscription.
+## Getting Started
 
----
-
-## Features
-
-### Contact Section
-- Fully responsive contact form.
-- Sends messages directly to email using **Resend API**.
-- Form validation for email and message.
-- **React Hot Toast** notifications for success or error.
-- Built with **Framer Motion** animations and **TailwindCSS** styling.
-
-### Footer Section
-- Separate footer with branding and social links.
-- Newsletter subscription integrated with **Resend API**.
-- Clean and minimal **TailwindCSS** layout.
-- Optional email subscription with **success/error toasts**.
-- Mobile-friendly grid layout.
-
-### Tech Stack
-- **Next.js** (v15.x) – React framework for server-side rendering.
-- **TailwindCSS** – Utility-first CSS framework for styling.
-- **Framer Motion** – For subtle animations and transitions.
-- **React Hot Toast** – For showing success/error notifications.
-- **Resend API** – To send emails programmatically.
-- **Lucide React** – Icons for social links and UI elements.
-
----
-
-## Installation
-
-1. Clone the repository:
+First, run the development server:
 
 ```bash
-git clone https://github.com/yourusername/portfolio-website.git
-cd portfolio-website
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
