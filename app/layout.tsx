@@ -4,6 +4,7 @@ import "./globals.css";
 import { RiHome4Line } from "react-icons/ri";
 import { GrDocumentDownload } from "react-icons/gr";
 import { HiOutlineDocumentArrowDown } from "react-icons/hi2";
+import ElasticCursorTrail from "./_components/ElasticCursorTrail";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,7 +33,9 @@ export default function RootLayout({
     >
       <body className="w-screen">
         {children}
+        <ElasticCursorTrail />
       </body>
     </html >
   );
 }
+
